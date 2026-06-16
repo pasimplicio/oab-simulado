@@ -90,6 +90,15 @@
 
   <script src="js/config.js"></script>
   <script src="js/questions.js"></script>
+  <!-- questions_oab.js é gerado pelo scripts/scraper.py — carregado apenas se existir -->
+  <script>
+    (function () {
+      var s = document.createElement('script');
+      s.src = 'js/questions_oab.js';
+      s.onerror = function () {}; // silencia se o arquivo ainda não foi gerado
+      document.head.appendChild(s);
+    })();
+  </script>
   <script src="js/app.js"></script>
 </body>
 </html>

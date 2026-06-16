@@ -3,6 +3,15 @@
  * Depende de config.js (SIMULADO_CONFIG) e questions.js (QUESTOES).
  */
 
+/* ---------------------- banco unificado ---------------------- */
+// Combina o banco autoral (QUESTOES) com o banco scraped (QUESTOES_OAB), se disponível.
+// QUESTOES_OAB é definido em questions_oab.js, carregado opcionalmente.
+function bancoCompleto() {
+  const base = Array.isArray(typeof QUESTOES !== "undefined" ? QUESTOES : []) ? QUESTOES : [];
+  const oab  = (typeof QUESTOES_OAB !== "undefined" && Array.isArray(QUESTOES_OAB)) ? QUESTOES_OAB : [];
+  return [...base, ...oab];
+}
+
 /* ---------------------- utilidades ---------------------- */
 function embaralhar(arr) {
   const a = arr.slice();
@@ -15,7 +24,7 @@ function embaralhar(arr) {
 
 function questoesPorDisciplina() {
   const mapa = {};
-  QUESTOES.forEach((q) => {
+  bancoCompleto().forEach((q) => {
     (mapa[q.disciplina] = mapa[q.disciplina] || []).push(q);
   });
   return mapa;
@@ -42,7 +51,7 @@ function gerarSimulado(total = SIMULADO_CONFIG.totalQuestoes) {
 
   // Completar (ou cortar) para bater o total exato.
   if (selecionadas.length < total) {
-    const resto = embaralhar(QUESTOES.filter((q) => !usados.has(q.id)));
+    const resto = embaralhar(bancoCompleto().filter((q) => !usados.has(q.id)));
     for (const q of resto) {
       if (selecionadas.length >= total) break;
       selecionadas.push(q);
@@ -133,20 +142,20 @@ function renderQuestao(q, opts = {}) {
   let comentario = "";
   if (revelar) {
     const acertou = marcada === q.correta;
-    const itens = letras
-      .map(
-        (L) =>
-          `<li class="${L === q.correta ? "ok" : "no"}"><b>${L})</b> ${q.comentario[L]}</li>`
-      )
-      .join("");
+    const temComentario = q.comentario && Object.values(q.comentario).some(Boolean);
+    const itens = temComentario
+      ? letras
+          .map((L) => `<li class="${L === q.correta ? "ok" : "no"}"><b>${L})</b> ${q.comentario[L]}</li>`)
+          .join("")
+      : "";
     comentario = `
       <div class="comentario">
         <p class="resultado ${acertou ? "acerto" : marcada ? "erro" : "branco"}">
           ${acertou ? "✓ Você acertou" : marcada ? "✗ Você errou" : "○ Em branco"} —
           gabarito: <b>${q.correta}</b>
         </p>
-        <p class="fundamento"><b>Fundamento:</b> ${q.fundamento}</p>
-        <ul class="distratores">${itens}</ul>
+        ${q.fundamento ? `<p class="fundamento"><b>Fundamento:</b> ${q.fundamento}</p>` : ""}
+        ${temComentario ? `<ul class="distratores">${itens}</ul>` : ""}
         ${q.pegadinha ? `<p class="pegadinha"><b>Pegadinha da banca:</b> ${q.pegadinha}</p>` : ""}
       </div>`;
   }
@@ -324,7 +333,7 @@ function preencherInfoInicio() {
   $("#info-exame").textContent = SIMULADO_CONFIG.exame;
   $("#info-banca").textContent = SIMULADO_CONFIG.banca;
   $("#info-total").textContent = SIMULADO_CONFIG.totalQuestoes;
-  $("#info-banco").textContent = QUESTOES.length;
+  $("#info-banco").textContent = bancoCompleto().length;
 
   const tbody = $("#tabela-distribuicao tbody");
   tbody.innerHTML = SIMULADO_CONFIG.distribuicao
