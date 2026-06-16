@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulado OAB — 47º Exame de Ordem (estilo FGV)</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo-inner">
+      <div class="logo">⚖️ Simulado OAB</div>
+      <div class="subtitulo">1ª fase · Prova Objetiva · estilo FGV</div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===================== TELA INÍCIO ===================== -->
+    <section id="tela-inicio">
+      <div class="card destaque">
+        <h1>Simulado do <span id="info-exame">47º Exame de Ordem Unificado</span></h1>
+        <p class="lead">
+          Banca <b id="info-banca">FGV</b> · <b id="info-total">80</b> questões de múltipla escolha
+          (A–D), resposta única. Nota de corte: <b>40</b> pontos (50%).
+          Banco com <b id="info-banco">85</b> questões inéditas no estilo da banca.
+        </p>
+
+        <div class="opcoes">
+          <label class="switch">
+            <input type="checkbox" id="chk-modo-prova" />
+            <span>Modo prova (uma questão por vez)</span>
+          </label>
+          <button id="btn-iniciar" class="btn primary grande">Gerar simulado →</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Distribuição por disciplina (calibrada pelo histórico FGV)</h3>
+        <table id="tabela-distribuicao" class="tabela-distribuicao">
+          <thead><tr><th>Disciplina</th><th class="center">Questões</th><th class="center">%</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="nota-rodape">
+          As questões são <b>inéditas e autorais</b>, escritas para replicar fielmente o estilo,
+          a dificuldade e as armadilhas da FGV — sem reproduzir literalmente provas anteriores
+          (protegidas por direito autoral). Cada questão traz fundamento legal e gabarito comentado.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== TELA PROVA ===================== -->
+    <section id="tela-prova" class="hidden">
+      <div class="barra-progresso">
+        <div class="progresso"><div id="progresso-bar"></div></div>
+        <span id="progresso-txt">0 / 80 respondidas</span>
+      </div>
+
+      <div id="lista-questoes"></div>
+
+      <div id="nav-modo-prova" class="nav-mp hidden">
+        <button id="mp-anterior" class="btn">← Anterior</button>
+        <span id="mp-pos">1 / 80</span>
+        <button id="mp-proxima" class="btn">Próxima →</button>
+      </div>
+
+      <div class="acoes">
+        <button id="btn-finalizar" class="btn primary grande">Finalizar e ver gabarito comentado</button>
+      </div>
+    </section>
+
+    <!-- ===================== TELA RESULTADO ===================== -->
+    <section id="tela-resultado" class="hidden">
+      <div id="resultado-conteudo"></div>
+      <div class="acoes">
+        <button id="btn-reiniciar" class="btn primary">Gerar novo simulado</button>
+      </div>
+      <h2 class="titulo-gabarito">Gabarito comentado</h2>
+      <div id="gabarito-conteudo"></div>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      Sistema gerado a partir do edital do 47º Exame de Ordem Unificado e da metodologia
+      "Transforme qualquer edital em um simulado da banca". Uso educacional.
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
