@@ -303,6 +303,95 @@ td:last-child, th:last-child { text-align: center; }
 }
 .rodape strong { color: var(--cyan); }
 
+/* ─── Tema claro ─────────────────────────────────────────────────── */
+body.light {
+  --navy:   #f0f4f8;
+  --navy2:  #e2eaf2;
+  --blue:   #1a56db;
+  --blue2:  #1c64f2;
+  --cyan:   #0284c7;
+  --green:  #16a34a;
+  --red:    #dc2626;
+  --yellow: #d97706;
+  --text:   #1e293b;
+  --muted:  #64748b;
+  --card:   rgba(255,255,255,.97);
+  --border: rgba(0,0,0,.09);
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  background: #f0f4f8;
+}
+body.light::before { display: none; }
+body.light .topo { background: rgba(240,244,248,.96); }
+body.light .barra-progresso { background: rgba(240,244,248,.96); }
+body.light .minimapa-wrapper { background: rgba(0,0,0,.04); }
+body.light .dot-vazio { background: #c7d7ed; border-color: #93b4d8; }
+
+/* ─── Botão tema ─────────────────────────────────────────────────── */
+.btn-tema {
+  margin-left: auto; flex-shrink: 0;
+  background: none; border: 1px solid var(--border);
+  border-radius: 50%; width: 34px; height: 34px;
+  font-size: 1rem; cursor: pointer; color: var(--text);
+  display: grid; place-items: center;
+  transition: background .15s;
+}
+.btn-tema:hover { background: rgba(255,255,255,.12); }
+body.light .btn-tema:hover { background: rgba(0,0,0,.06); }
+
+/* ─── Cronômetro ─────────────────────────────────────────────────── */
+.cronometro {
+  font-family: 'Courier New', monospace;
+  font-size: .86rem; font-weight: 700;
+  color: var(--muted); white-space: nowrap; letter-spacing: .05em;
+}
+.cronometro.atencao { color: var(--yellow); }
+.cronometro.critico { color: var(--red); animation: piscar .6s infinite; }
+@keyframes piscar { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* ─── Minimapa ───────────────────────────────────────────────────── */
+.minimapa-wrapper {
+  padding: 10px 0;
+  background: rgba(0,0,0,.18);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+#minimapa {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  max-width: 860px; margin: 0 auto; padding: 0 18px;
+  justify-content: flex-start;
+}
+.dot {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+  cursor: pointer; border: 1px solid rgba(255,255,255,.12);
+  transition: transform .1s, box-shadow .1s; position: relative;
+}
+.dot:hover { transform: scale(1.4); box-shadow: 0 0 5px rgba(255,255,255,.4); }
+.dot-vazio   { background: #1e3a5f; border-color: rgba(0,87,248,.3); }
+.dot-resp    { background: var(--yellow); border-color: #b45309; }
+.dot-correta { background: var(--green);  border-color: #15803d; }
+.dot-errada  { background: var(--red);    border-color: #b91c1c; }
+.dot-branco  { background: #374151; border-color: #4b5563; }
+.dot-atual   { box-shadow: 0 0 0 2px var(--cyan); transform: scale(1.2); }
+.dot-flag::after {
+  content: ''; position: absolute; top: -3px; right: -3px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #f97316; border: 1px solid rgba(0,0,0,.3);
+}
+
+/* ─── Botão flag (marcar para revisão) ──────────────────────────── */
+.btn-flag {
+  background: none; border: none; cursor: pointer;
+  font-size: .85rem; opacity: .3; padding: 2px 4px;
+  border-radius: 5px; line-height: 1;
+  transition: opacity .15s, background .15s;
+}
+.btn-flag:hover { opacity: .65; background: rgba(255,255,255,.08); }
+.btn-flag.ativo { opacity: 1; }
+
+/* ─── Alternativa travada (feedback imediato) ────────────────────── */
+.alternativa.travada { cursor: not-allowed; pointer-events: none; }
+
 /* ─── Responsivo ─────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .topo-inner { height: 54px; }
@@ -312,4 +401,6 @@ td:last-child, th:last-child { text-align: center; }
   .questao .topico { margin-left: 0; width: 100%; }
   .resultado-card .nota { font-size: 2.1rem; }
   .mini-bar { width: 70px; }
+  .dot { width: 12px; height: 12px; }
+  #minimapa { gap: 4px; }
 }
