@@ -18,7 +18,7 @@ O sistema consiste em:
 - **Módulo de Correção:** Fornece nota, desempenho por disciplina e mapa de revisão.
 - **Gabarito Comentado:** Explica fundamento legal, distratores e pegadinhas de cada questão.
 - **Painel de Interação:** Interface responsiva com feedback imediato, controle de tempo e personalização.
-- **Banco de Questões Autorais:** Base de dados extensível com questões inéditas no estilo FGV.
+- **Banco de Questões para Treino:** Base de dados extensível com questões organizadas no formato OAB/FGV.
 
 ### 1.3 Público-Alvo
 - **Candidatos à OAB:** Estudantes de direito e bacharéis que buscam treino intensivo.
@@ -141,7 +141,7 @@ A Landing Page deve seguir a estrutura de copywriting AIDA (Atenção, Interesse
 
 #### Seção 1: Hero (Atenção)
 - **Título de Impacto:** "Treine para a 1ª Fase da OAB com Simulados Indistinguíveis dos da FGV"
-- **Subtítulo:** "Questões inéditas, correção detalhada e mapa de revisão. O único sistema que replica fielmente o estilo, as pegadinhas e a distribuição de temas da banca."
+- **Subtítulo:** "Banco de questões para treino OAB/FGV, correção estruturada e mapa de revisão para orientar seus estudos."
 - **CTA (Call to Action) Principal:** Botão grande "TESTE GRÁTIS POR 7 DIAS" ou "ASSINE AGORA"
 - **Imagem:** GIF do sistema em funcionamento (tela de prova com alternativas e resultado).
 
@@ -155,7 +155,7 @@ Apresentar os diferenciais em formato de cards com ícones:
 | Ícone | Diferencial | Descrição |
 | :--- | :--- | :--- |
 | 🎯 | **Fidelidade FGV** | Questões com o mesmo vocabulário, pegadinhas e base legal da banca. |
-| 📝 | **Questões Inéditas e Autorais** | 100% das questões são criadas pela nossa equipe, sem violar direitos autorais. |
+| 📝 | **Banco de Questões Organizado** | Questões estruturadas por disciplina, dificuldade e formato da prova. |
 | 🔍 | **Feedback Imediato** | Saiba na hora se acertou ou errou, com fundamento legal e explicação dos distratores. |
 | 🗺️ | **Mapa de Revisão** | Descubra seus pontos fracos e direcione seus estudos com precisão. |
 | ⏱️ | **Controle de Tempo** | Cronômetro regressivo de 5h para treinar a gestão do tempo da prova. |
