@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulado OAB - PSDEV Sistemas</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="simulado-page">
+  <header class="topo">
+    <div class="topo-inner">
+      <a class="brand-link" href="index.html" aria-label="Voltar para landing page">
+        <img class="logo-img" src="logopsdev.png" alt="PSDEV Sistemas" onerror="this.style.display='none'" />
+        <span class="logo-brand">
+          <span class="brand-name">PSDEV Sistemas</span>
+          <span class="brand-sub">Desenvolvimento de Software</span>
+        </span>
+      </a>
+      <div class="topo-divider"></div>
+      <div class="subtitulo">Simulado OAB - 1a fase - estilo FGV</div>
+      <div class="topo-actions" aria-label="Preferencias visuais">
+        <button id="btn-font-minus" class="btn-mini" type="button" title="Diminuir fonte">A-</button>
+        <button id="btn-font-plus" class="btn-mini" type="button" title="Aumentar fonte">A+</button>
+        <button id="btn-tema" class="btn-tema" type="button" title="Alternar tema claro/escuro">Tema claro</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="mensagem-simulado" class="mensagem-simulado hidden" role="status" aria-live="polite"></div>
+
+    <section id="tela-inicio">
+      <div class="card destaque">
+        <span class="hero-badge">Treino OAB/FGV</span>
+        <h1>Simulado do <span id="info-exame">47o Exame de Ordem Unificado</span></h1>
+        <p class="lead">
+          Banca <b id="info-banca">FGV</b> - prova-base de <b id="info-total">80</b> questoes.
+          Banco com <b id="info-banco">0</b> questoes para treino, organizadas por disciplina e dificuldade.
+        </p>
+        <div class="opcoes">
+          <label class="switch">
+            <input type="checkbox" id="chk-modo-prova" />
+            <span class="switch-slider"></span>
+            <span>Modo prova (uma questao por vez)</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="chk-embaralhar" checked />
+            <span class="switch-slider"></span>
+            <span>Embaralhar alternativas</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card filtros-card">
+        <h2>Configurar simulado</h2>
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Quantidade</span>
+            <select id="sel-total">
+              <option value="80">80 questoes</option>
+              <option value="40">40 questoes</option>
+              <option value="20">20 questoes</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Dificuldade</span>
+            <select id="sel-dificuldade">
+              <option value="todas">Todas</option>
+              <option value="facil">Faceis</option>
+              <option value="media">Medias</option>
+              <option value="dificil">Dificeis</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="filter-heading">
+          <h3>Disciplinas</h3>
+          <div>
+            <button id="btn-todas-disciplinas" class="btn small" type="button">Selecionar todas</button>
+            <button id="btn-nenhuma-disciplina" class="btn small" type="button">Limpar</button>
+          </div>
+        </div>
+        <div id="filtro-disciplinas" class="disciplinas-grid"></div>
+
+        <div class="acoes">
+          <button id="btn-iniciar" class="btn primary grande" type="button">Gerar simulado</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="filter-heading">
+          <h3>Historico local</h3>
+          <button id="btn-limpar-historico" class="btn small" type="button">Limpar historico</button>
+        </div>
+        <div id="historico-lista" class="historico-lista"></div>
+      </div>
+
+      <div class="card">
+        <h3>Distribuicao por disciplina (prova-base)</h3>
+        <table id="tabela-distribuicao" class="tabela-distribuicao">
+          <thead><tr><th>Disciplina</th><th class="center">Questoes</th><th class="center">%</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="nota-rodape">
+          O sistema usa um banco de questoes para treino OAB/FGV. Alguns itens podem nao possuir
+          fundamento comentado; nesses casos o gabarito continua sendo exibido.
+        </p>
+      </div>
+    </section>
+
+    <section id="tela-prova" class="hidden">
+      <div class="barra-progresso">
+        <div class="progresso"><div id="progresso-bar"></div></div>
+        <span id="progresso-txt">0 / 80 respondidas</span>
+        <span id="cronometro" class="cronometro">05:00:00</span>
+        <button id="btn-pausar-tempo" class="btn small" type="button">Pausar tempo</button>
+      </div>
+
+      <div class="minimapa-wrapper">
+        <div id="minimapa"></div>
+      </div>
+
+      <div id="lista-questoes"></div>
+
+      <div id="nav-modo-prova" class="nav-mp hidden">
+        <button id="mp-anterior" class="btn" type="button">Anterior</button>
+        <span id="mp-pos">1 / 80</span>
+        <button id="mp-proxima" class="btn" type="button">Proxima</button>
+      </div>
+
+      <div class="acoes">
+        <button id="btn-finalizar" class="btn primary grande" type="button">Finalizar e ver gabarito</button>
+      </div>
+    </section>
+
+    <section id="tela-resultado" class="hidden">
+      <div id="resultado-conteudo"></div>
+      <div class="acoes">
+        <button id="btn-reiniciar" class="btn primary" type="button">Gerar novo simulado</button>
+        <a class="btn" href="index.html">Voltar para a landing</a>
+      </div>
+      <h2 class="titulo-gabarito">Gabarito comentado</h2>
+      <div id="gabarito-conteudo"></div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <strong>PSDEV Sistemas</strong> - Simulado OAB - uso educacional - questoes para treino no estilo OAB/FGV.
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/questions_oab.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

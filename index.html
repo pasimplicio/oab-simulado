@@ -3,112 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulado OAB — PSDEV Sistemas</title>
+  <title>Simulado OAB/FGV - PSDEV Sistemas</title>
+  <meta name="description" content="Treine para a 1a fase da OAB com simulados no formato FGV, banco de questoes por disciplina, cronometro e mapa de revisao." />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
-  <header class="topo">
-    <div class="topo-inner">
-      <img class="logo-img" src="data:image/png;base64,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" alt="PSDEV Sistemas" />
-      <div class="logo-brand">
-        <div class="brand-name">PSDEV Sistemas</div>
-        <div class="brand-sub">Desenvolvimento de Software</div>
-      </div>
-      <div class="topo-divider"></div>
-      <div class="subtitulo">⚖️ Simulado OAB · 1ª fase · estilo FGV</div>
-      <button id="btn-tema" class="btn-tema" title="Alternar tema claro/escuro">☀️</button>
+<body class="landing-page">
+  <header class="topo landing-topo">
+    <div class="topo-inner landing-nav">
+      <a class="brand-link" href="index.html" aria-label="PSDEV Sistemas">
+        <img class="logo-img" src="logopsdev.png" alt="PSDEV Sistemas" onerror="this.style.display='none'" />
+        <span class="logo-brand">
+          <span class="brand-name">PSDEV Sistemas</span>
+          <span class="brand-sub">Simulado OAB/FGV</span>
+        </span>
+      </a>
+      <nav class="landing-menu" aria-label="Navegacao principal">
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#preview">Preview</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn primary" href="simulado.html">Comecar simulado</a>
     </div>
   </header>
 
-  <main class="container">
+  <main class="landing-main">
+    <section class="landing-hero">
+      <div class="landing-container hero-grid">
+        <div>
+          <span class="hero-badge">1a fase da OAB - estilo FGV</span>
+          <h1>Treine com simulados organizados no formato da prova da OAB.</h1>
+          <p class="lead">
+            Banco de questoes para treino OAB/FGV, distribuicao por disciplina, modo prova,
+            cronometro de 5 horas, feedback no modo livre e mapa de revisao ao final.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary grande" href="simulado.html">Comecar simulado agora</a>
+            <a class="btn grande" href="#planos">Ver planos</a>
+            <a class="btn grande" href="mailto:contato@psdevsistemas.com.br">Falar com a PSDEV</a>
+          </div>
+          <div class="hero-metrics" aria-label="Resumo do sistema">
+            <span><b>80</b> questoes no modelo completo</span>
+            <span><b>20+</b> disciplinas</span>
+            <span><b>5h</b> de cronometro</span>
+          </div>
+        </div>
 
-    <!-- ===================== TELA INÍCIO ===================== -->
-    <section id="tela-inicio">
-      <div class="card destaque">
-        <h1>Simulado do <span id="info-exame">47º Exame de Ordem Unificado</span></h1>
-        <p class="lead">
-          Banca <b id="info-banca">FGV</b> · <b id="info-total">80</b> questões de múltipla escolha
-          (A–D), resposta única. Nota de corte: <b>40</b> pontos (50%).
-          Banco com <b id="info-banco">85</b> questões inéditas no estilo da banca.
-        </p>
-        <div class="opcoes">
-          <label class="switch">
-            <input type="checkbox" id="chk-modo-prova" />
-            <span class="switch-slider"></span>
-            <span>Modo prova (uma questão por vez)</span>
-          </label>
-          <button id="btn-iniciar" class="btn primary grande">Gerar simulado →</button>
+        <aside class="hero-preview-card" aria-label="Preview do simulado">
+          <div class="preview-topbar">
+            <span></span><span></span><span></span>
+          </div>
+          <h2>Simulado OAB</h2>
+          <p>Configure disciplina, dificuldade e quantidade antes de iniciar.</p>
+          <div class="fake-question">
+            <strong>Questao 12</strong>
+            <p>Treine com alternativas no padrao A-D e correcao estruturada.</p>
+            <div class="fake-option ok">A resposta marcada aparece em destaque no modo livre.</div>
+            <div class="fake-option">B modo prova guarda a correcao para o final.</div>
+            <div class="fake-option">C revise pelo minimapa e por disciplina.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="landing-section" id="problema">
+      <div class="landing-container two-columns">
+        <div class="card">
+          <h2>O problema</h2>
+          <p>
+            O candidato precisa treinar ritmo, distribuicao de disciplinas e revisao dos pontos fracos.
+            Simulados soltos dificultam enxergar progresso e concentrar estudo no que mais pesa.
+          </p>
+        </div>
+        <div class="card destaque">
+          <h2>A solucao</h2>
+          <p>
+            Um ambiente de treino direto no navegador, com prova completa ou focada, resultado por
+            disciplina, historico local e gabarito organizado quando o banco traz comentario.
+          </p>
         </div>
       </div>
+    </section>
 
-      <div class="card">
-        <h3>Distribuição por disciplina (calibrada pelo histórico FGV)</h3>
-        <table id="tabela-distribuicao" class="tabela-distribuicao">
-          <thead><tr><th>Disciplina</th><th class="center">Questões</th><th class="center">%</th></tr></thead>
-          <tbody></tbody>
-        </table>
-        <p class="nota-rodape">
-          As questões são <b>inéditas e autorais</b>, escritas para replicar fielmente o estilo,
-          a dificuldade e as armadilhas da FGV — sem reproduzir literalmente provas anteriores
-          (protegidas por direito autoral). Cada questão traz fundamento legal e gabarito comentado.
-        </p>
+    <section class="landing-section" id="diferenciais">
+      <div class="landing-container">
+        <div class="section-heading">
+          <span class="hero-badge">Diferenciais</span>
+          <h2>Treino mais visivel, controlado e ajustavel.</h2>
+        </div>
+        <div class="features-grid">
+          <article class="feature-card"><b>Formato OAB/FGV</b><p>Distribuicao por disciplina baseada no modelo da 1a fase.</p></article>
+          <article class="feature-card"><b>Banco organizado</b><p>Questoes agrupadas por disciplina, topico e dificuldade.</p></article>
+          <article class="feature-card"><b>Modo prova</b><p>Uma questao por vez, sem feedback antes da finalizacao.</p></article>
+          <article class="feature-card"><b>Modo livre</b><p>Feedback visual imediato para treino rapido.</p></article>
+          <article class="feature-card"><b>Mapa de revisao</b><p>Mostra disciplinas abaixo de 60% para orientar estudo.</p></article>
+          <article class="feature-card"><b>Historico local</b><p>Guarda tentativas no navegador, sem criar conta nesta fase.</p></article>
+        </div>
       </div>
     </section>
 
-    <!-- ===================== TELA PROVA ===================== -->
-    <section id="tela-prova" class="hidden">
-      <div class="barra-progresso">
-        <div class="progresso"><div id="progresso-bar"></div></div>
-        <span id="progresso-txt">0 / 80 respondidas</span>
-        <span id="cronometro" class="cronometro">05:00:00</span>
-      </div>
-
-      <div class="minimapa-wrapper">
-        <div id="minimapa"></div>
-      </div>
-
-      <div id="lista-questoes"></div>
-
-      <div id="nav-modo-prova" class="nav-mp hidden">
-        <button id="mp-anterior" class="btn">← Anterior</button>
-        <span id="mp-pos">1 / 80</span>
-        <button id="mp-proxima" class="btn">Próxima →</button>
-      </div>
-
-      <div class="acoes">
-        <button id="btn-finalizar" class="btn primary grande">Finalizar e ver gabarito comentado</button>
+    <section class="landing-section" id="preview">
+      <div class="landing-container preview-panel">
+        <div>
+          <span class="hero-badge">Preview do produto</span>
+          <h2>Configure o treino antes de iniciar.</h2>
+          <p>
+            Escolha 20, 40 ou 80 questoes, filtre disciplinas, escolha dificuldade e decida
+            se deseja embaralhar alternativas. O simulado continua 100% client-side.
+          </p>
+          <a class="btn primary" href="simulado.html">Abrir simulado</a>
+        </div>
+        <div class="preview-checklist">
+          <span>Filtro por disciplinas</span>
+          <span>Filtro por dificuldade</span>
+          <span>Cronometro pausavel</span>
+          <span>Historico local</span>
+          <span>Tema claro/escuro e fonte ajustavel</span>
+        </div>
       </div>
     </section>
 
-    <!-- ===================== TELA RESULTADO ===================== -->
-    <section id="tela-resultado" class="hidden">
-      <div id="resultado-conteudo"></div>
-      <div class="acoes">
-        <button id="btn-reiniciar" class="btn primary">Gerar novo simulado</button>
+    <section class="landing-section" id="planos">
+      <div class="landing-container">
+        <div class="section-heading">
+          <span class="hero-badge">Planos demonstrativos</span>
+          <h2>Comercializacao preparada para uma fase posterior.</h2>
+          <p>Os planos abaixo sao apresentacao comercial. Pagamento e login ainda nao foram ativados.</p>
+        </div>
+        <div class="plans-grid">
+          <article class="plan-card">
+            <h3>Basico</h3>
+            <strong>R$ 29,90/mes</strong>
+            <p>Simulados, modo prova, modo livre e mapa de revisao.</p>
+            <a class="btn" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Basico%20OAB">Tenho interesse</a>
+          </article>
+          <article class="plan-card destaque">
+            <h3>Pro</h3>
+            <strong>R$ 49,90/mes</strong>
+            <p>Inclui filtros avancados, historico e recursos de acompanhamento.</p>
+            <a class="btn primary" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Pro%20OAB">Falar com a PSDEV</a>
+          </article>
+          <article class="plan-card">
+            <h3>Institucional</h3>
+            <strong>R$ 499/mes</strong>
+            <p>Modelo para turmas, faculdades e cursinhos em etapa futura.</p>
+            <a class="btn" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Institucional%20OAB">Solicitar conversa</a>
+          </article>
+        </div>
       </div>
-      <h2 class="titulo-gabarito">Gabarito comentado</h2>
-      <div id="gabarito-conteudo"></div>
     </section>
 
+    <section class="landing-section" id="faq">
+      <div class="landing-container">
+        <div class="section-heading">
+          <span class="hero-badge">FAQ</span>
+          <h2>Perguntas frequentes</h2>
+        </div>
+        <div class="faq-list">
+          <details open><summary>Preciso criar conta?</summary><p>Nao nesta fase. O simulado roda direto no navegador.</p></details>
+          <details><summary>Qual e a origem do banco?</summary><p>O produto usa um banco de questoes para treino OAB/FGV e comunica isso de forma neutra, sem promessa de exclusividade autoral.</p></details>
+          <details><summary>Funciona no celular?</summary><p>Sim. A interface foi mantida responsiva para desktop e mobile.</p></details>
+          <details><summary>O historico fica onde?</summary><p>No localStorage do proprio navegador. Ele pode ser limpo pelo usuario.</p></details>
+          <details><summary>Ja tem pagamento?</summary><p>Nao. A comercializacao completa fica para uma etapa SaaS posterior.</p></details>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="rodape">
     <div class="container">
-      <strong>PSDEV Sistemas</strong> · Simulado OAB — uso educacional ·
-      Questões no estilo FGV · 47º Exame de Ordem Unificado
+      <strong>PSDEV Sistemas</strong> - Simulado OAB/FGV - Produto estatico em fase de evolucao.
     </div>
   </footer>
-
-  <script src="js/config.js"></script>
-  <script src="js/questions.js"></script>
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.src = 'js/questions_oab.js';
-      s.onerror = function () {};
-      document.head.appendChild(s);
-    })();
-  </script>
-  <script src="js/app.js"></script>
 </body>
 </html>
