@@ -1,7 +1,7 @@
 // Google OAuth 2.0 Client ID
 // Configure em: https://console.cloud.google.com/apis/credentials
 // Adicione sua origem Vercel em "Authorized JavaScript origins"
-const GOOGLE_CLIENT_ID = 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '937027859061-1mou1qmnpsgm3oicetvmragqu5p2dd8r.apps.googleusercontent.com';
 
 const AUTH_KEY = 'oab_auth_user';
 
