@@ -636,3 +636,72 @@ body.light .form-field select { background: #fff; }
   }
   .topo-actions .btn-tema { padding-inline: 8px; }
 }
+
+/* ─── Autenticação — Modal de Login ──────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(7,17,31,.85); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.hidden { display: none; }
+
+.modal-card {
+  position: relative;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px 36px 32px;
+  max-width: 420px; width: 100%;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  text-align: center;
+  animation: modalIn .2s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)  translateY(0); }
+}
+
+.modal-fechar {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; color: var(--muted);
+  font-size: 1.5rem; cursor: pointer; line-height: 1;
+  transition: color .15s;
+}
+.modal-fechar:hover { color: var(--text); }
+
+.modal-icone { font-size: 2.8rem; margin-bottom: 12px; }
+
+.modal-card h2 {
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--text); margin-bottom: 8px;
+}
+.modal-desc {
+  color: var(--muted); font-size: .93rem; margin-bottom: 28px;
+}
+.google-btn-wrapper {
+  display: flex; justify-content: center; margin-bottom: 20px;
+  min-height: 44px;
+}
+.modal-nota {
+  font-size: .78rem; color: var(--muted); line-height: 1.5;
+}
+
+/* ─── User chip — header ─────────────────────────────────────── */
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+}
+.user-chip.hidden { display: none; }
+.user-chip-sm { margin-left: 8px; }
+
+.user-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--border);
+}
+.user-nome {
+  font-size: .85rem; color: var(--text); font-weight: 500;
+  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Light theme adjustments */
+body.light .modal-card { background: rgba(255,255,255,.98); border-color: rgba(0,0,0,.09); }
+body.light .modal-fechar { color: #64748b; }
+body.light .modal-fechar:hover { color: #1e293b; }

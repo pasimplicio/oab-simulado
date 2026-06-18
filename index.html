@@ -6,8 +6,23 @@
   <title>Simulado OAB/FGV - PSDEV Sistemas</title>
   <meta name="description" content="Treine para a 1ª fase da OAB com simulados no formato FGV, banco de questões por disciplina, cronômetro e mapa de revisão." />
   <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/auth.js"></script>
 </head>
 <body class="landing-page">
+
+  <!-- Modal de login -->
+  <div id="modal-login" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-card">
+      <button class="modal-fechar" id="modal-fechar" type="button" aria-label="Fechar">×</button>
+      <div class="modal-icone">🎓</div>
+      <h2 id="modal-titulo">Acesso ao simulado</h2>
+      <p class="modal-desc">Entre com sua conta Google para acessar o simulado OAB/FGV.</p>
+      <div id="google-signin-btn" class="google-btn-wrapper"></div>
+      <p class="modal-nota">Seus dados não são enviados a nenhum servidor. A sessão fica apenas no seu navegador.</p>
+    </div>
+  </div>
+
   <header class="topo landing-topo">
     <div class="topo-inner landing-nav">
       <a class="brand-link" href="index.html" aria-label="PSDEV Sistemas">
@@ -23,7 +38,14 @@
         <a href="#planos">Planos</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn primary" href="simulado.html">Começar simulado</a>
+      <!-- Exibido quando não logado -->
+      <button class="btn primary" id="btn-entrar" type="button">Entrar com Google</button>
+      <!-- Exibido quando logado -->
+      <div id="user-chip" class="user-chip hidden">
+        <img id="user-avatar" class="user-avatar" src="" alt="" />
+        <span id="user-nome" class="user-nome"></span>
+        <button class="btn small" type="button" onclick="logoutUser()">Sair</button>
+      </div>
     </div>
   </header>
 
@@ -38,7 +60,7 @@
             cronômetro de 5 horas, feedback no modo livre e mapa de revisão ao final.
           </p>
           <div class="hero-actions">
-            <a class="btn primary grande" href="simulado.html">Começar simulado agora</a>
+            <button class="btn primary grande" id="btn-comecar" type="button">Começar simulado agora</button>
             <a class="btn grande" href="#planos">Ver planos</a>
             <a class="btn grande" href="mailto:contato@psdevsistemas.com.br">Falar com a PSDEV</a>
           </div>
@@ -97,7 +119,7 @@
           <article class="feature-card"><b>Modo prova</b><p>Uma questão por vez, sem feedback antes da finalização.</p></article>
           <article class="feature-card"><b>Modo livre</b><p>Feedback visual imediato para treino rápido.</p></article>
           <article class="feature-card"><b>Mapa de revisão</b><p>Mostra disciplinas abaixo de 60% para orientar estudo.</p></article>
-          <article class="feature-card"><b>Histórico local</b><p>Guarda tentativas no navegador, sem criar conta nesta fase.</p></article>
+          <article class="feature-card"><b>Histórico local</b><p>Guarda tentativas no navegador, sem criar conta adicional.</p></article>
         </div>
       </div>
     </section>
@@ -111,7 +133,7 @@
             Escolha 20, 40 ou 80 questões, filtre disciplinas, escolha dificuldade e decida
             se deseja embaralhar alternativas. O simulado continua 100% client-side.
           </p>
-          <a class="btn primary" href="simulado.html">Abrir simulado</a>
+          <button class="btn primary" id="btn-preview-simulado" type="button">Abrir simulado</button>
         </div>
         <div class="preview-checklist">
           <span>Filtro por disciplinas</span>
@@ -160,7 +182,7 @@
           <h2>Perguntas frequentes</h2>
         </div>
         <div class="faq-list">
-          <details open><summary>Preciso criar conta?</summary><p>Não nesta fase. O simulado roda direto no navegador.</p></details>
+          <details open><summary>Preciso criar conta?</summary><p>Sim, o login é feito com sua conta Google. Não criamos senha ou banco de dados — só verificamos sua identidade para liberar o acesso.</p></details>
           <details><summary>Qual é a origem do banco?</summary><p>O produto usa um banco de questões para treino OAB/FGV e comunica isso de forma neutra, sem promessa de exclusividade autoral.</p></details>
           <details><summary>Funciona no celular?</summary><p>Sim. A interface foi mantida responsiva para desktop e mobile.</p></details>
           <details><summary>O histórico fica onde?</summary><p>No localStorage do próprio navegador. Ele pode ser limpo pelo usuário.</p></details>
@@ -175,5 +197,69 @@
       <strong>PSDEV Sistemas</strong> — Simulado OAB/FGV — Produto estático em fase de evolução.
     </div>
   </footer>
+
+  <script>
+    (function () {
+      const user = getUser();
+
+      // Atualiza o header conforme estado de login
+      function atualizarHeader() {
+        const chip = document.getElementById('user-chip');
+        const btnEntrar = document.getElementById('btn-entrar');
+        if (user) {
+          chip.classList.remove('hidden');
+          btnEntrar.classList.add('hidden');
+          document.getElementById('user-avatar').src = user.picture || '';
+          document.getElementById('user-nome').textContent = user.name.split(' ')[0];
+        }
+      }
+
+      function abrirModal() {
+        document.getElementById('modal-login').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function fecharModal() {
+        document.getElementById('modal-login').classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      function irParaSimulado() {
+        if (getUser()) {
+          window.location.href = 'simulado.html';
+        } else {
+          abrirModal();
+        }
+      }
+
+      atualizarHeader();
+
+      // Botões que exigem auth antes de ir ao simulado
+      document.getElementById('btn-entrar').addEventListener('click', irParaSimulado);
+      document.getElementById('btn-comecar').addEventListener('click', irParaSimulado);
+      document.getElementById('btn-preview-simulado').addEventListener('click', irParaSimulado);
+      document.getElementById('modal-fechar').addEventListener('click', fecharModal);
+
+      // Fechar modal ao clicar fora do card
+      document.getElementById('modal-login').addEventListener('click', function (e) {
+        if (e.target === this) fecharModal();
+      });
+
+      // Fechar com Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') fecharModal();
+      });
+
+      // Abrir modal automaticamente se veio redirecionado do simulado sem auth
+      if (new URLSearchParams(location.search).get('login') === '1') {
+        abrirModal();
+      }
+
+      // Inicializa o botão Google quando a biblioteca carregar
+      window.addEventListener('load', function () {
+        initGoogleAuth('google-signin-btn');
+      });
+    })();
+  </script>
 </body>
 </html>

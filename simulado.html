@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulado OAB - PSDEV Sistemas</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/auth.js"></script>
+  <script>
+    // Guard: redireciona para login se não autenticado
+    (function () { requireAuth(); })();
+  </script>
 </head>
 <body class="simulado-page">
   <header class="topo">
@@ -22,6 +27,11 @@
         <button id="btn-font-minus" class="btn-mini" type="button" title="Diminuir fonte">A-</button>
         <button id="btn-font-plus" class="btn-mini" type="button" title="Aumentar fonte">A+</button>
         <button id="btn-tema" class="btn-tema" type="button" title="Alternar tema claro/escuro">Tema claro</button>
+        <div class="user-chip user-chip-sm" id="user-chip-simulado">
+          <img id="sim-avatar" class="user-avatar" src="" alt="" />
+          <span id="sim-nome" class="user-nome"></span>
+          <button class="btn small" type="button" onclick="logoutUser()">Sair</button>
+        </div>
       </div>
     </div>
   </header>
@@ -154,5 +164,16 @@
   <script src="js/questions.js"></script>
   <script src="js/questions_oab.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    // Exibe avatar e nome do usuário logado no header
+    (function () {
+      const u = getUser();
+      if (!u) return;
+      const av = document.getElementById('sim-avatar');
+      const nm = document.getElementById('sim-nome');
+      if (av) av.src = u.picture || '';
+      if (nm) nm.textContent = u.name.split(' ')[0];
+    })();
+  </script>
 </body>
 </html>
