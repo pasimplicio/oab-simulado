@@ -1,5 +1,6 @@
 /* ─── Variáveis ──────────────────────────────────────────────── */
 :root {
+  color-scheme: dark;
   --navy:      #07111f;
   --navy2:     #0d1e33;
   --blue:      #0047c8;
@@ -306,6 +307,7 @@ td:last-child, th:last-child { text-align: center; }
 
 /* ─── Tema claro ─────────────────────────────────────────────────── */
 body.light {
+  color-scheme: light;
   --navy:   #f0f4f8;
   --navy2:  #e2eaf2;
   --blue:   #1a56db;
@@ -579,14 +581,9 @@ body.light .preview-checklist span {
 .form-field select {
   width: 100%; border: 1px solid var(--border); border-radius: 10px;
   background: var(--card); color: var(--text);
-  padding: 10px 12px; font: inherit; color-scheme: dark;
+  padding: 10px 12px; font: inherit;
 }
-.form-field select option {
-  background: var(--navy);
-  color: var(--text);
-}
-body.light .form-field select { background: #fff; color-scheme: light; }
-body.light .form-field select option { background: #fff; color: #1a202c; }
+body.light .form-field select { background: #fff; }
 .filter-heading {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; margin: 8px 0 12px;
