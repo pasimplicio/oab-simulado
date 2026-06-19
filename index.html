@@ -221,16 +221,6 @@
           document.getElementById('user-nome').textContent =
             (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
 
-          // Se tem acesso, redireciona ao simulado (a menos que veio de sem-acesso)
-          if (!params.has('sem-acesso') && !params.has('planos')) {
-            const res = await fetch('/api/v1/user/me', {
-              headers: { Authorization: `Bearer ${session.access_token}` }
-            }).then(r => r.json()).catch(() => null);
-            if (res?.data?.hasAccess) {
-              window.location.replace('simulado.html');
-              return;
-            }
-          }
         }
 
         // Banners contextuais
