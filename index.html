@@ -26,7 +26,7 @@
       </a>
       <nav class="landing-menu" aria-label="Navegação principal">
         <a href="#diferenciais">Diferenciais</a>
-        <a href="/amostra">Amostra grátis</a>
+        <a href="/amostra" class="js-amostra-cta">Amostra grátis</a>
         <a href="#planos">Planos</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -76,7 +76,7 @@
             cronômetro de 5 horas, feedback no modo livre e mapa de revisão ao final.
           </p>
           <div class="hero-actions">
-            <a class="btn primary grande" href="/amostra">Experimentar grátis</a>
+            <a class="btn primary grande js-amostra-cta" href="/amostra">Experimentar grátis</a>
             <button class="btn grande" id="btn-comecar" type="button">Começar simulado agora</button>
           </div>
           <div class="hero-metrics" aria-label="Resumo do sistema">
@@ -149,7 +149,7 @@
             se deseja embaralhar alternativas. O simulado continua 100% client-side.
           </p>
           <div class="hero-actions">
-            <a class="btn primary" href="/amostra">Experimentar grátis</a>
+            <a class="btn primary js-amostra-cta" href="/amostra">Experimentar grátis</a>
             <button class="btn" id="btn-preview-simulado" type="button">Abrir simulado</button>
           </div>
         </div>
@@ -272,6 +272,9 @@
       function mostrarStatusAssinatura(dados) {
         const sub = dados.subscription;
         if (!sub || (!dados.hasAccess && !sub.acesso_manual)) return;
+
+        // Já tem acesso ativo — esconde os CTAs de "Experimentar grátis"
+        document.querySelectorAll('.js-amostra-cta').forEach(el => { el.style.display = 'none'; });
 
         const badge      = document.getElementById('assinatura-badge');
         const btnAcessar = document.getElementById('btn-acessar-simulado');
