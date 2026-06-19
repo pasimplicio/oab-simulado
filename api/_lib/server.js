@@ -45,23 +45,38 @@ const DIAS_PLANO = { mensal: 30, trimestral: 90, semestral: 180 };
 export async function ativarAssinaturaPorPagamento(pix) {
   if (!pix || pix.status !== 'approved') return { ativado: false, motivo: 'nao_aprovado' };
 
-  const md     = pix.metadata || {};
-  const userId = md.user_id || md.userId;
-  const plano  = md.plano;
-  if (!userId || !plano) return { ativado: false, motivo: 'metadata_incompleto' };
+  const md   = pix.metadata || {};
+  let userId = md.user_id || md.userId;
+  let plano  = md.plano;
 
-  const dias      = DIAS_PLANO[plano] || 30;
+  // Fallback: external_reference é retornado pelo MP sem transformar as chaves (metadata às vezes some/transforma)
+  if ((!userId || !plano) && typeof pix.external_reference === 'string') {
+    const [refUser, refPlano] = pix.external_reference.split('|');
+    userId = userId || refUser;
+    plano  = plano  || refPlano;
+  }
+
+  if (!userId || !plano)      return { ativado: false, motivo: 'sem_user_ou_plano' };
+  if (!DIAS_PLANO[plano])     return { ativado: false, motivo: 'plano_invalido:' + plano };
+
+  const dias      = DIAS_PLANO[plano];
   const validoAte = new Date(Date.now() + dias * 24 * 60 * 60 * 1000).toISOString();
+  const base = {
+    user_id:    userId,
+    plano,
+    status:     'active',
+    valido_ate: validoAte,
+    updated_at: new Date().toISOString(),
+  };
 
   const sb = supabaseAdmin();
-  const { error } = await sb.from('subscriptions').upsert({
-    user_id:       userId,
-    plano,
-    status:        'active',
-    valido_ate:    validoAte,
-    mp_payment_id: pix.id?.toString(),
-    updated_at:    new Date().toISOString(),
-  }, { onConflict: 'user_id' });
+  // Tenta gravar com mp_payment_id; se a coluna não existir, refaz sem ela (não bloqueia a liberação)
+  let { error } = await sb.from('subscriptions')
+    .upsert({ ...base, mp_payment_id: pix.id?.toString() }, { onConflict: 'user_id' });
+  if (error) {
+    const retry = await sb.from('subscriptions').upsert(base, { onConflict: 'user_id' });
+    error = retry.error;
+  }
 
   if (error) return { ativado: false, motivo: error.message };
   return { ativado: true, validoAte, plano };

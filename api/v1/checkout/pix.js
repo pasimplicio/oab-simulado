@@ -41,6 +41,7 @@ export default async function handler(req, res) {
         last_name:  nome.slice(1).join(' ') || 'OAB',
       },
       metadata: { user_id: user.id, plano },
+      external_reference: `${user.id}|${plano}`,
     },
   });
 
