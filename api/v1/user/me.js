@@ -1,5 +1,5 @@
 // GET /api/v1/user/me — retorna perfil + status de acesso
-import { supabaseAdmin, setCors, ok, fail, getAuthUser, hasActiveAccess } from '../../../_lib/server.js';
+import { supabaseAdmin, setCors, ok, fail, getAuthUser, hasActiveAccess } from '../../_lib/server.js';
 
 export default async function handler(req, res) {
   setCors(res);

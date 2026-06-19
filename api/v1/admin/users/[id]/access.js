@@ -1,5 +1,5 @@
 // PATCH /api/v1/admin/users/[id]/access — toggle acesso_manual (admin only)
-import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../../../../_lib/server.js';
+import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../../../_lib/server.js';
 
 export default async function handler(req, res) {
   setCors(res);

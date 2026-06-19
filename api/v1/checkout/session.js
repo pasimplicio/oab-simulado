@@ -1,6 +1,6 @@
 // POST /api/v1/checkout/session — cria sessão Stripe Checkout
 import Stripe from 'stripe';
-import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../../_lib/server.js';
+import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../_lib/server.js';
 
 const PRICE_MAP = {
   mensal:      process.env.STRIPE_PRICE_MENSAL,

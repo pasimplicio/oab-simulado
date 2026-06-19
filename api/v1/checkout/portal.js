@@ -1,6 +1,6 @@
 // POST /api/v1/checkout/portal — abre Stripe Customer Portal (cancelar/trocar plano)
 import Stripe from 'stripe';
-import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../../_lib/server.js';
+import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../_lib/server.js';
 
 export default async function handler(req, res) {
   setCors(res);

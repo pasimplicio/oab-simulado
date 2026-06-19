@@ -1,6 +1,6 @@
 // POST /api/v1/stripe/webhook — recebe eventos Stripe e atualiza subscriptions
 import Stripe from 'stripe';
-import { supabaseAdmin } from '../../../_lib/server.js';
+import { supabaseAdmin } from '../../_lib/server.js';
 
 export const config = { api: { bodyParser: false } };
 

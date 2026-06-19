@@ -1,5 +1,5 @@
 // GET /api/v1/admin/metrics — métricas financeiras e de usuários (admin only)
-import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../../_lib/server.js';
+import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../_lib/server.js';
 
 const PRECO = { mensal: 19.9, trimestral: 39.9, semestral: 69.9 };
 
