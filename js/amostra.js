@@ -119,7 +119,6 @@
           <p class="resultado ${acertou ? "acerto" : "erro"}">
             ${acertou ? "Você acertou" : "Você errou"} — gabarito: <b>${escapeHtml(q.correta)}</b>
           </p>
-          <p class="feedback-rapido">🔒 Comentário, fundamento legal e pegadinha da banca disponíveis no acesso completo.</p>
         </div>`;
     }
 
