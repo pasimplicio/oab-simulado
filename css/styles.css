@@ -584,6 +584,34 @@ body.light .preview-checklist span {
   padding: 10px 12px; font: inherit;
 }
 body.light .form-field select { background: #fff; }
+
+/* ── Custom select (evita popup nativo do SO) ── */
+.cselect { position: relative; width: 100%; }
+.cselect-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--card); color: var(--text);
+  padding: 10px 12px; font: inherit; cursor: pointer; text-align: left;
+}
+.cselect-btn:hover { border-color: var(--cyan); }
+.cselect-arrow { font-size: .7rem; opacity: .6; transition: transform .15s; }
+.cselect.open .cselect-arrow { transform: rotate(180deg); }
+.cselect-list {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--navy2); border: 1px solid var(--border); border-radius: 10px;
+  list-style: none; overflow: hidden; z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+.cselect.open .cselect-list { display: block; }
+.cselect-list li {
+  padding: 10px 14px; cursor: pointer; color: var(--text); font-size: .95rem;
+  transition: background .1s;
+}
+.cselect-list li:hover { background: rgba(0,180,216,.12); }
+.cselect-list li.selected { color: var(--cyan); font-weight: 700; }
+body.light .cselect-btn { background: #fff; }
+body.light .cselect-list { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+body.light .cselect-list li:hover { background: rgba(0,87,248,.07); }
 .filter-heading {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; margin: 8px 0 12px;

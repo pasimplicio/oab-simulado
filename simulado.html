@@ -77,23 +77,40 @@
       <div class="card filtros-card">
         <h2>Configurar simulado</h2>
         <div class="form-grid">
-          <label class="form-field">
+          <div class="form-field">
             <span>Quantidade</span>
-            <select id="sel-total">
-              <option value="80">80 questões</option>
-              <option value="40">40 questões</option>
-              <option value="20">20 questões</option>
+            <div class="cselect" id="csel-total" data-value="80">
+              <button class="cselect-btn" type="button" aria-haspopup="listbox">80 questões<span class="cselect-arrow">▾</span></button>
+              <ul class="cselect-list" role="listbox">
+                <li role="option" data-value="80">80 questões</li>
+                <li role="option" data-value="40">40 questões</li>
+                <li role="option" data-value="20">20 questões</li>
+              </ul>
+            </div>
+            <select id="sel-total" hidden>
+              <option value="80">80</option>
+              <option value="40">40</option>
+              <option value="20">20</option>
             </select>
-          </label>
-          <label class="form-field">
+          </div>
+          <div class="form-field">
             <span>Dificuldade</span>
-            <select id="sel-dificuldade">
+            <div class="cselect" id="csel-dificuldade" data-value="todas">
+              <button class="cselect-btn" type="button" aria-haspopup="listbox">Todas<span class="cselect-arrow">▾</span></button>
+              <ul class="cselect-list" role="listbox">
+                <li role="option" data-value="todas">Todas</li>
+                <li role="option" data-value="facil">Fáceis</li>
+                <li role="option" data-value="media">Médias</li>
+                <li role="option" data-value="dificil">Difíceis</li>
+              </ul>
+            </div>
+            <select id="sel-dificuldade" hidden>
               <option value="todas">Todas</option>
               <option value="facil">Fáceis</option>
               <option value="media">Médias</option>
               <option value="dificil">Difíceis</option>
             </select>
-          </label>
+          </div>
         </div>
 
         <div class="filter-heading">
@@ -173,6 +190,36 @@
     </div>
   </footer>
 
+  <script>
+    // ── Custom select ──────────────────────────────────────────────────────────
+    document.querySelectorAll('.cselect').forEach(function (cs) {
+      const btn    = cs.querySelector('.cselect-btn');
+      const list   = cs.querySelector('.cselect-list');
+      const native = document.getElementById(cs.id.replace('csel-', 'sel-'));
+
+      list.querySelectorAll('li').forEach(function (li) {
+        if (li.dataset.value === cs.dataset.value) li.classList.add('selected');
+        li.addEventListener('click', function () {
+          cs.dataset.value = li.dataset.value;
+          btn.childNodes[0].textContent = li.textContent;
+          list.querySelectorAll('li').forEach(function (l) { l.classList.remove('selected'); });
+          li.classList.add('selected');
+          if (native) { native.value = li.dataset.value; native.dispatchEvent(new Event('change')); }
+          cs.classList.remove('open');
+        });
+      });
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.querySelectorAll('.cselect.open').forEach(function (o) { if (o !== cs) o.classList.remove('open'); });
+        cs.classList.toggle('open');
+      });
+    });
+
+    document.addEventListener('click', function () {
+      document.querySelectorAll('.cselect.open').forEach(function (o) { o.classList.remove('open'); });
+    });
+  </script>
   <script src="js/config.js"></script>
   <script src="js/questions.js"></script>
   <script src="js/questions_oab.js"></script>
