@@ -33,7 +33,7 @@ async function loginWithGoogle(redirectTo) {
       redirectTo: redirectTo || (window.location.origin + '/index.html'),
     },
   });
-  if (error) console.error('[auth] login error:', error.message);
+  if (error) throw new Error(error.message);
 }
 
 async function logoutUser() {

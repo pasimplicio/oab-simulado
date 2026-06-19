@@ -250,11 +250,21 @@
 
       // ── Botões que exigem auth ─────────────────────────────────────────────
       async function irParaSimulado() {
-        const session = await _supabase.auth.getSession().then(r => r.data.session);
-        if (!session) {
-          loginWithGoogle(window.location.origin + '/index.html');
-        } else {
-          window.location.href = 'simulado.html';
+        // Verifica se o cliente Supabase carregou
+        if (typeof _supabase === 'undefined') {
+          alert('Erro: biblioteca de autenticação não carregou. Recarregue a página.');
+          return;
+        }
+        try {
+          const session = await _supabase.auth.getSession().then(r => r.data.session);
+          if (!session) {
+            await loginWithGoogle(window.location.origin + '/index.html');
+          } else {
+            window.location.href = 'simulado.html';
+          }
+        } catch (e) {
+          alert('Erro ao iniciar login: ' + e.message);
+          console.error(e);
         }
       }
 
