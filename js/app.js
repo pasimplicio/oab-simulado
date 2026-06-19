@@ -395,7 +395,7 @@ function renderQuestao(q, opts = {}) {
       : "";
     const resumo = q.fundamento
       ? `<p class="feedback-rapido"><b>Resumo r\u00e1pido:</b> ${escapeHtml(q.fundamento)}</p>`
-      : `<p class="feedback-rapido"><b>Resumo r\u00e1pido:</b> gabarito ${escapeHtml(q.correta)}. Coment\u00e1rio detalhado indispon\u00edvel para esta quest\u00e3o.</p>`;
+      : "";
     comentario = `
       <div class="comentario">
         <p class="resultado ${acertou ? "acerto" : marcada ? "erro" : "branco"}">
