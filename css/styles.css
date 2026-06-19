@@ -61,7 +61,7 @@ main { padding: 26px 0 60px; }
   display: flex; align-items: center; gap: 14px;
   height: 62px;
 }
-.logo-img { height: 38px; width: auto; display: block; }
+.logo-img { height: 38px; width: auto; display: block; background: #fff; border-radius: 6px; padding: 3px 5px; }
 .logo-brand { line-height: 1.2; }
 .logo-brand .brand-name { font-size: .72rem; font-weight: 700; color: var(--cyan); letter-spacing: .08em; text-transform: uppercase; }
 .logo-brand .brand-sub  { font-size: .63rem; color: var(--muted); letter-spacing: .04em; }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulado OAB/FGV - PSDEV Sistemas</title>
   <meta name="description" content="Treine para a 1ª fase da OAB com simulados no formato FGV, banco de questões por disciplina, cronômetro e mapa de revisão." />
-  <link rel="stylesheet" href="css/styles.css?v=4" />
+  <link rel="stylesheet" href="css/styles.css?v=5" />
   <link rel="manifest" href="manifest.json" />
   <script src="js/env.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -17,8 +17,8 @@
 
   <header class="topo landing-topo">
     <div class="topo-inner landing-nav">
-      <a class="brand-link" href="index.html" aria-label="PSDEV Sistemas">
-        <img class="logo-img" src="logopsdev.png" alt="PSDEV Sistemas" onerror="this.style.display='none'" />
+      <a class="brand-link" href="/" aria-label="PSDEV Sistemas">
+        <img class="logo-img" src="logo_fundo_branco.png" alt="PSDEV Sistemas" onerror="this.style.display='none'" />
         <span class="logo-brand">
           <span class="brand-name">PSDEV Sistemas</span>
           <span class="brand-sub">Simulado OAB/FGV</span>
@@ -39,6 +39,8 @@
       <div id="user-chip" class="user-chip hidden">
         <img id="user-avatar" class="user-avatar" src="" alt="" />
         <span id="user-nome" class="user-nome"></span>
+        <span id="assinatura-badge" class="assinatura-badge hidden"></span>
+        <a id="btn-acessar-simulado" href="simulado.html" class="btn small primary hidden">Acessar</a>
         <button class="btn small" type="button" onclick="logoutUser()">Sair</button>
       </div>
     </div>
@@ -62,14 +64,6 @@
     <a href="#planos" class="btn small primary">Renovar agora</a>
   </div>
 
-  <!-- Card: status da assinatura (visível quando logado com plano ativo) -->
-  <div id="card-assinatura" class="card-assinatura hidden">
-    <div class="card-assinatura-info">
-      <span class="assinatura-badge" id="assinatura-badge"></span>
-      <span class="assinatura-detalhe" id="assinatura-detalhe"></span>
-    </div>
-    <a href="simulado.html" class="btn small primary">Acessar simulado</a>
-  </div>
 
   <main class="landing-main">
     <section class="landing-hero">
@@ -259,39 +253,35 @@
         }
       }
 
-      // ── Exibe card de assinatura e alertas de vencimento ─────────────────────
+      // ── Exibe status da assinatura no chip do header ─────────────────────────
       function mostrarStatusAssinatura(dados) {
         const sub = dados.subscription;
         if (!sub || (!dados.hasAccess && !sub.acesso_manual)) return;
 
-        const nomes = { mensal: 'Plano Mensal', trimestral: 'Plano Trimestral', semestral: 'Plano Semestral' };
+        const badge      = document.getElementById('assinatura-badge');
+        const btnAcessar = document.getElementById('btn-acessar-simulado');
+        const nomes      = { mensal: 'Mensal', trimestral: 'Trimestral', semestral: 'Semestral' };
 
         if (sub.acesso_manual) {
-          // Acesso manual: mostra badge simples, sem data
-          const badge   = document.getElementById('assinatura-badge');
-          const detalhe = document.getElementById('assinatura-detalhe');
-          badge.textContent   = 'Acesso liberado';
-          badge.className     = 'assinatura-badge badge-manual';
-          detalhe.textContent = 'Acesso concedido pelo administrador';
-          document.getElementById('card-assinatura').classList.remove('hidden');
+          badge.textContent = 'Acesso liberado';
+          badge.className   = 'assinatura-badge badge-manual';
+          badge.classList.remove('hidden');
+          if (btnAcessar) btnAcessar.classList.remove('hidden');
           return;
         }
 
         if (sub.status === 'active' && sub.valido_ate) {
-          const vence      = new Date(sub.valido_ate);
+          const vence         = new Date(sub.valido_ate);
           const diasRestantes = Math.ceil((vence - Date.now()) / 86400000);
-          const dataFmt    = vence.toLocaleDateString('pt-BR');
-          const nomePlano  = nomes[sub.plano] || sub.plano || 'Plano ativo';
+          const dataFmt       = vence.toLocaleDateString('pt-BR');
+          const nomePlano     = nomes[sub.plano] || 'Ativo';
 
-          // Card de status
-          const badge   = document.getElementById('assinatura-badge');
-          const detalhe = document.getElementById('assinatura-detalhe');
-          badge.textContent   = nomePlano;
-          badge.className     = 'assinatura-badge badge-active';
-          detalhe.textContent = `Ativo até ${dataFmt} — ${diasRestantes} dia${diasRestantes !== 1 ? 's' : ''} restante${diasRestantes !== 1 ? 's' : ''}`;
-          document.getElementById('card-assinatura').classList.remove('hidden');
+          badge.textContent = `${nomePlano} · ${diasRestantes}d`;
+          badge.className   = 'assinatura-badge badge-active';
+          badge.title       = `Ativo até ${dataFmt}`;
+          badge.classList.remove('hidden');
+          if (btnAcessar) btnAcessar.classList.remove('hidden');
 
-          // Alerta de vencimento próximo
           if (diasRestantes <= 7) {
             const urgente = diasRestantes <= 3;
             const banner  = document.getElementById('banner-vencimento');
