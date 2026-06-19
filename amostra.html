@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amostra grátis — Simulado OAB/FGV</title>
+  <meta name="description" content="Experimente grátis: responda 5 questões no estilo FGV e veja a correção comentada na hora, sem cadastro." />
+  <link rel="stylesheet" href="css/styles.css?v=5" />
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body class="simulado-page">
+
+  <header class="topo">
+    <div class="topo-inner">
+      <a class="brand-link" href="/" aria-label="Voltar para a página inicial">
+        <img class="logo-img" src="logo_fundo_branco.png" alt="PSDEV Sistemas" onerror="this.style.display='none'" />
+        <span class="logo-brand">
+          <span class="brand-name">PSDEV Sistemas</span>
+          <span class="brand-sub">Simulado OAB/FGV</span>
+        </span>
+      </a>
+      <div class="topo-divider"></div>
+      <div class="subtitulo">Amostra grátis — sem cadastro</div>
+      <div class="topo-actions">
+        <a class="btn small" href="/#planos">Ver planos</a>
+        <a class="btn small primary" href="/?login=1">Entrar</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="card destaque">
+      <span class="hero-badge">Degustação OAB/FGV</span>
+      <h1>Responda 5 questões e veja a correção comentada na hora</h1>
+      <p class="lead">
+        Sem cadastro, sem cartão. Escolha uma alternativa e o sistema mostra o gabarito,
+        o fundamento legal e o porquê de cada alternativa — do mesmo jeito que no simulado completo.
+      </p>
+      <div class="barra-progresso" style="margin-top:8px;">
+        <span id="amostra-progresso">0 / 5 respondidas</span>
+      </div>
+    </section>
+
+    <div id="amostra-lista"></div>
+
+    <!-- Paywall pós-amostra -->
+    <section id="amostra-paywall" class="card destaque hidden" style="text-align:center;">
+      <span class="hero-badge">Gostou da amostra?</span>
+      <h2 id="amostra-score">Você concluiu a amostra.</h2>
+      <p class="lead">
+        Esta foi só uma prévia. Com o acesso completo você treina com
+        <b>mais de 2.000 questões</b> de provas oficiais da OAB/FGV, prova de 80 questões,
+        cronômetro de 5 horas, filtros por disciplina e mapa de revisão.
+      </p>
+      <div class="acoes" style="justify-content:center;">
+        <a class="btn primary grande" href="/#planos">Ver planos e assinar</a>
+        <button id="btn-amostra-reiniciar" class="btn grande" type="button">Tentar outras questões</button>
+      </div>
+      <p class="nota-rodape" style="margin-top:14px;">
+        Acesso liberado na hora após o pagamento via PIX. Garantia de 7 dias.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <strong>PSDEV Sistemas</strong> — Simulado OAB/FGV —
+      <a href="mailto:sistemaspsdev@gmail.com">sistemaspsdev@gmail.com</a>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/amostra.js"></script>
+</body>
+</html>
