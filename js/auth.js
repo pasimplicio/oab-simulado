@@ -53,7 +53,13 @@ async function loginWithGoogle() {
       sub.unsubscribe();
       clearInterval(poll);
       if (!popupJaFechado && !popup.closed) popup.close();
-      const { data: { session } } = await _supabase.auth.getSession();
+      // A sessão pode levar um instante para hidratar do localStorage após o popup
+      let session = null;
+      for (let i = 0; i < 8; i++) {
+        session = (await _supabase.auth.getSession()).data.session;
+        if (session) break;
+        await new Promise(r => setTimeout(r, 250));
+      }
       resolve(session);
     };
 
