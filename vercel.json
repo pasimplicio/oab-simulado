@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "crons": [
+    { "path": "/api/v1/ping", "schedule": "0 6 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
