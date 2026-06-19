@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — OAB Simulado</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/env.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <style>
+    /* ── Admin layout ──────────────────────────────── */
+    .admin-topo {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-brand { font-weight: 700; color: var(--cyan); letter-spacing: .03em; }
+    .admin-main  { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Métricas ──────────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+    }
+    .metric-label { font-size: .78rem; color: var(--muted); margin-bottom: 6px; }
+    .metric-value { font-size: 1.9rem; font-weight: 700; color: var(--text); }
+    .metric-card.destaque .metric-value { color: var(--cyan); }
+
+    /* ── Filtros ───────────────────────────────────── */
+    .admin-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .admin-filters input[type="text"] {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 14px;
+      font-size: .9rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .admin-filters select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 8px 14px;
+      font-size: .9rem;
+    }
+
+    /* ── Tabela ────────────────────────────────────── */
+    .admin-table-wrap { overflow-x: auto; }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    .admin-table th {
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      vertical-align: middle;
+    }
+    .admin-table tr:hover td { background: rgba(255,255,255,.02); }
+    .admin-empty { text-align: center; color: var(--muted); padding: 40px !important; }
+
+    /* ── User cell ─────────────────────────────────── */
+    .admin-user-cell     { display: flex; align-items: center; gap: 10px; }
+    .admin-user-name     { font-weight: 600; }
+    .admin-user-email    { font-size: .78rem; color: var(--muted); }
+    .user-avatar-placeholder {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--border); display: flex; align-items: center;
+      justify-content: center; font-size: .8rem; color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* ── Badges ────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-active   { background: rgba(0,200,100,.15); color: #00c864; }
+    .badge-manual   { background: rgba(0,150,255,.15); color: #4db6ff; }
+    .badge-canceled { background: rgba(220,50,50,.15);  color: #f66; }
+    .badge-due      { background: rgba(255,150,0,.15);  color: #ffa040; }
+    .badge-none     { background: rgba(255,255,255,.07); color: var(--muted); }
+
+    /* ── Toggle switch ─────────────────────────────── */
+    .toggle-switch { display: inline-flex; align-items: center; cursor: pointer; }
+    .toggle-switch input { display: none; }
+    .toggle-track {
+      width: 38px; height: 22px;
+      background: var(--border);
+      border-radius: 11px;
+      position: relative;
+      transition: background .2s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--cyan); }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left .2s;
+    }
+    .toggle-switch input:checked + .toggle-track .toggle-thumb { left: 19px; }
+
+    /* ── Admin obs / date ──────────────────────────── */
+    .admin-obs  { font-size: .78rem; color: var(--muted); max-width: 180px; }
+    .admin-date { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+
+    /* ── Modal ─────────────────────────────────────── */
+    .modal-overlay.hidden { display: none; }
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(7,17,31,.85); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      max-width: 400px;
+      width: calc(100% - 40px);
+    }
+    .modal-card h3 { margin: 0 0 8px; }
+    .modal-card p  { color: var(--muted); margin: 0 0 20px; font-size: .9rem; }
+    .modal-card textarea {
+      width: 100%; box-sizing: border-box;
+      background: var(--bg, #07111f);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: .88rem;
+      resize: vertical;
+      min-height: 72px;
+      margin-bottom: 20px;
+    }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ── Loading ───────────────────────────────────── */
+    #admin-loading {
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; gap: 12px; color: var(--muted);
+    }
+    .spinner {
+      width: 22px; height: 22px;
+      border: 3px solid var(--border);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="simulado-page">
+
+  <!-- Loading inicial -->
+  <div id="admin-loading">
+    <div class="spinner"></div>
+    Verificando acesso...
+  </div>
+
+  <!-- App (oculto até auth confirmar) -->
+  <div id="admin-app" style="display:none">
+
+    <header class="admin-topo">
+      <span class="admin-brand">OAB Admin</span>
+      <div class="user-chip">
+        <img id="admin-avatar" class="user-avatar" src="" alt="" />
+        <span id="admin-nome" class="user-nome"></span>
+        <button class="btn small" type="button" onclick="logoutUser()">Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Métricas -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total de usuários</div>
+          <div class="metric-value" id="m-total">—</div>
+        </div>
+        <div class="metric-card destaque">
+          <div class="metric-label">Assinaturas ativas</div>
+          <div class="metric-value" id="m-ativos">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Acesso manual</div>
+          <div class="metric-value" id="m-manual">—</div>
+        </div>
+        <div class="metric-card destaque">
+          <div class="metric-label">MRR estimado</div>
+          <div class="metric-value" id="m-mrr">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Simulados feitos</div>
+          <div class="metric-value" id="m-simulados">—</div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="admin-filters">
+        <input type="text" id="search-email" placeholder="Buscar por e-mail..." />
+        <select id="filter-status">
+          <option value="all">Todos os status</option>
+          <option value="active">Ativos</option>
+          <option value="manual">Acesso manual</option>
+          <option value="expired">Expirados/Sem plano</option>
+        </select>
+        <button class="btn small" id="btn-refresh" type="button">↻ Atualizar</button>
+      </div>
+
+      <!-- Tabela de usuários -->
+      <div class="card admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Plano</th>
+              <th>Status</th>
+              <th>Acesso manual</th>
+              <th>Observação</th>
+              <th>Cadastro</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr><td colspan="6" class="admin-empty">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: toggle acesso manual -->
+  <div id="modal-acesso" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3 id="modal-acesso-titulo">Alterar acesso</h3>
+      <p id="modal-acesso-desc"></p>
+      <div id="modal-obs-wrapper">
+        <label style="display:block;margin-bottom:6px;font-size:.85rem;color:var(--muted)">Observação (motivo)</label>
+        <textarea id="modal-obs" placeholder="Ex: parceiro, beta tester, cupom..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="modal-acesso-cancelar" type="button">Cancelar</button>
+        <button class="btn primary" id="modal-acesso-confirmar" type="button">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

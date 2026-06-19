@@ -1,0 +1,17 @@
+{
+  "name": "OAB Simulado — PSDEV",
+  "short_name": "OAB Simulado",
+  "description": "Simulado OAB 1ª fase no formato FGV — treine por disciplina com cronômetro.",
+  "start_url": "/simulado.html",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#00b4d8",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "logopsdev.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "logopsdev.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": []
+}

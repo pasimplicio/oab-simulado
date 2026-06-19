@@ -5,13 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulado OAB - PSDEV Sistemas</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Oculta o body até confirmação de acesso -->
+  <style>body { visibility: hidden; }</style>
+  <script src="js/env.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="js/auth.js"></script>
-  <script>
-    // Guard: redireciona para login se não autenticado
-    (function () { requireAuth(); })();
-  </script>
 </head>
 <body class="simulado-page">
+
+  <!-- Overlay de carregamento (visível mesmo com body oculto) -->
+  <div id="auth-loading" style="visibility:visible; position:fixed; inset:0; z-index:9999;
+       display:flex; flex-direction:column; align-items:center; justify-content:center;
+       background:var(--navy,#07111f); gap:14px; color:var(--muted,#8899aa);">
+    <div style="width:28px;height:28px;border:3px solid rgba(255,255,255,.12);
+         border-top-color:#00b4d8;border-radius:50%;animation:spin .7s linear infinite;"></div>
+    <span style="font-size:.9rem;">Verificando acesso...</span>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+  </div>
+
   <header class="topo">
     <div class="topo-inner">
       <a class="brand-link" href="index.html" aria-label="Voltar para landing page">
@@ -165,14 +178,29 @@
   <script src="js/questions_oab.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // Exibe avatar e nome do usuário logado no header
-    (function () {
-      const u = getUser();
-      if (!u) return;
-      const av = document.getElementById('sim-avatar');
-      const nm = document.getElementById('sim-nome');
-      if (av) av.src = u.picture || '';
-      if (nm) nm.textContent = u.name.split(' ')[0];
+    // Guard async: verifica acesso via API antes de revelar a página
+    (async function () {
+      try {
+        const ok = await requireAccess();
+        if (!ok) return; // requireAccess já redirecionou
+      } catch (e) {
+        window.location.replace('index.html?login=1');
+        return;
+      }
+
+      // Acesso confirmado — revela conteúdo e remove spinner
+      document.body.style.visibility = 'visible';
+      document.getElementById('auth-loading').style.display = 'none';
+
+      // Popula chip de usuário no header
+      const session = await _supabase.auth.getSession().then(r => r.data.session);
+      if (session) {
+        const meta = session.user.user_metadata || {};
+        const av = document.getElementById('sim-avatar');
+        const nm = document.getElementById('sim-nome');
+        if (av) av.src = meta.avatar_url || '';
+        if (nm) nm.textContent = (meta.full_name || meta.name || session.user.email || '').split(' ')[0];
+      }
     })();
   </script>
 </body>

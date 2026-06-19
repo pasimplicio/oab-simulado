@@ -6,22 +6,13 @@
   <title>Simulado OAB/FGV - PSDEV Sistemas</title>
   <meta name="description" content="Treine para a 1ª fase da OAB com simulados no formato FGV, banco de questões por disciplina, cronômetro e mapa de revisão." />
   <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="manifest" href="manifest.json" />
+  <script src="js/env.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="js/auth.js"></script>
 </head>
 <body class="landing-page">
-
-  <!-- Modal de login -->
-  <div id="modal-login" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
-    <div class="modal-card">
-      <button class="modal-fechar" id="modal-fechar" type="button" aria-label="Fechar">×</button>
-      <div class="modal-icone">🎓</div>
-      <h2 id="modal-titulo">Acesso ao simulado</h2>
-      <p class="modal-desc">Entre com sua conta Google para acessar o simulado OAB/FGV.</p>
-      <div id="google-signin-btn" class="google-btn-wrapper"></div>
-      <p class="modal-nota">Seus dados não são enviados a nenhum servidor. A sessão fica apenas no seu navegador.</p>
-    </div>
-  </div>
 
   <header class="topo landing-topo">
     <div class="topo-inner landing-nav">
@@ -38,9 +29,7 @@
         <a href="#planos">Planos</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <!-- Exibido quando não logado -->
       <button class="btn primary" id="btn-entrar" type="button">Entrar com Google</button>
-      <!-- Exibido quando logado -->
       <div id="user-chip" class="user-chip hidden">
         <img id="user-avatar" class="user-avatar" src="" alt="" />
         <span id="user-nome" class="user-nome"></span>
@@ -48,6 +37,18 @@
       </div>
     </div>
   </header>
+
+  <!-- Banner: sem acesso (redirecionado do simulado) -->
+  <div id="banner-sem-acesso" class="banner-aviso hidden">
+    <span>Você precisa de uma assinatura ativa para acessar o simulado.</span>
+    <a href="#planos" class="btn small primary">Ver planos</a>
+  </div>
+
+  <!-- Banner: checkout concluído -->
+  <div id="banner-checkout-ok" class="banner-sucesso hidden">
+    <span>✓ Assinatura ativada! Bem-vindo ao OAB Simulado.</span>
+    <a href="simulado.html" class="btn small primary">Acessar simulado</a>
+  </div>
 
   <main class="landing-main">
     <section class="landing-hero">
@@ -62,7 +63,6 @@
           <div class="hero-actions">
             <button class="btn primary grande" id="btn-comecar" type="button">Começar simulado agora</button>
             <a class="btn grande" href="#planos">Ver planos</a>
-            <a class="btn grande" href="mailto:contato@psdevsistemas.com.br">Falar com a PSDEV</a>
           </div>
           <div class="hero-metrics" aria-label="Resumo do sistema">
             <span><b>80</b> questões no modelo completo</span>
@@ -145,33 +145,38 @@
       </div>
     </section>
 
+    <!-- ── PLANOS ─────────────────────────────────────────────── -->
     <section class="landing-section" id="planos">
       <div class="landing-container">
         <div class="section-heading">
-          <span class="hero-badge">Planos demonstrativos</span>
-          <h2>Comercialização preparada para uma fase posterior.</h2>
-          <p>Os planos abaixo são apresentação comercial. Pagamento e login ainda não foram ativados.</p>
+          <span class="hero-badge">Planos</span>
+          <h2>Acesso completo ao simulado OAB/FGV.</h2>
+          <p>Cancele quando quiser. Sem fidelidade.</p>
         </div>
         <div class="plans-grid">
           <article class="plan-card">
-            <h3>Básico</h3>
-            <strong>R$ 29,90/mês</strong>
-            <p>Simulados, modo prova, modo livre e mapa de revisão.</p>
-            <a class="btn" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Basico%20OAB">Tenho interesse</a>
+            <h3>Mensal</h3>
+            <strong>R$ 19,90<span class="plan-periodo">/mês</span></strong>
+            <p>Renovação mensal automática. Acesse até cancelar.</p>
+            <button class="btn grande" type="button" onclick="assinar('mensal')">Assinar agora</button>
           </article>
           <article class="plan-card destaque">
-            <h3>Pro</h3>
-            <strong>R$ 49,90/mês</strong>
-            <p>Inclui filtros avançados, histórico e recursos de acompanhamento.</p>
-            <a class="btn primary" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Pro%20OAB">Falar com a PSDEV</a>
+            <div class="plan-tag">Mais popular</div>
+            <h3>Trimestral</h3>
+            <strong>R$ 39,90<span class="plan-periodo">/trimestre</span></strong>
+            <p>R$ 13,30/mês — economia de 33% em relação ao mensal.</p>
+            <button class="btn primary grande" type="button" onclick="assinar('trimestral')">Assinar agora</button>
           </article>
           <article class="plan-card">
-            <h3>Institucional</h3>
-            <strong>R$ 499/mês</strong>
-            <p>Modelo para turmas, faculdades e cursinhos em etapa futura.</p>
-            <a class="btn" href="mailto:contato@psdevsistemas.com.br?subject=Plano%20Institucional%20OAB">Solicitar conversa</a>
+            <h3>Semestral</h3>
+            <strong>R$ 69,90<span class="plan-periodo">/semestre</span></strong>
+            <p>R$ 11,65/mês — melhor custo-benefício para o exame inteiro.</p>
+            <button class="btn grande" type="button" onclick="assinar('semestral')">Assinar agora</button>
           </article>
         </div>
+        <p class="nota-rodape" style="text-align:center;margin-top:20px;">
+          Pagamento seguro via Stripe · Cartão de crédito e PIX · Cancele a qualquer momento
+        </p>
       </div>
     </section>
 
@@ -182,11 +187,12 @@
           <h2>Perguntas frequentes</h2>
         </div>
         <div class="faq-list">
-          <details open><summary>Preciso criar conta?</summary><p>Sim, o login é feito com sua conta Google. Não criamos senha ou banco de dados — só verificamos sua identidade para liberar o acesso.</p></details>
-          <details><summary>Qual é a origem do banco?</summary><p>O produto usa um banco de questões para treino OAB/FGV e comunica isso de forma neutra, sem promessa de exclusividade autoral.</p></details>
-          <details><summary>Funciona no celular?</summary><p>Sim. A interface foi mantida responsiva para desktop e mobile.</p></details>
-          <details><summary>O histórico fica onde?</summary><p>No localStorage do próprio navegador. Ele pode ser limpo pelo usuário.</p></details>
-          <details><summary>Já tem pagamento?</summary><p>Não. A comercialização completa fica para uma etapa SaaS posterior.</p></details>
+          <details open><summary>Preciso criar conta?</summary><p>Sim, o login é feito com sua conta Google. Não criamos senha ou banco de dados adicional — sua identidade Google é usada para liberar o acesso.</p></details>
+          <details><summary>Como funciona o pagamento?</summary><p>Processado via Stripe, que aceita cartão de crédito e PIX. Nenhum dado de cartão passa pelo nosso servidor.</p></details>
+          <details><summary>Posso cancelar quando quiser?</summary><p>Sim. Acesse o portal de assinatura e cancele. O acesso continua até o fim do período pago.</p></details>
+          <details><summary>Qual é a origem do banco de questões?</summary><p>O produto usa um banco de questões para treino OAB/FGV e comunica isso de forma neutra, sem promessa de exclusividade autoral.</p></details>
+          <details><summary>Funciona no celular?</summary><p>Sim. A interface é responsiva e pode ser instalada como app (PWA) na tela inicial do celular.</p></details>
+          <details><summary>O histórico fica onde?</summary><p>No localStorage do próprio navegador. Pode ser limpo pelo usuário a qualquer momento.</p></details>
         </div>
       </div>
     </section>
@@ -194,71 +200,107 @@
 
   <footer class="rodape">
     <div class="container">
-      <strong>PSDEV Sistemas</strong> — Simulado OAB/FGV — Produto estático em fase de evolução.
+      <strong>PSDEV Sistemas</strong> — Simulado OAB/FGV — <a href="mailto:contato@psdevsistemas.com.br">contato@psdevsistemas.com.br</a>
     </div>
   </footer>
 
   <script>
     (function () {
-      const user = getUser();
+      const params = new URLSearchParams(location.search);
 
-      // Atualiza o header conforme estado de login
-      function atualizarHeader() {
-        const chip = document.getElementById('user-chip');
-        const btnEntrar = document.getElementById('btn-entrar');
-        if (user) {
+      // ── Detecta sessão Supabase e atualiza header ──────────────────────────
+      async function inicializar() {
+        const session = await _supabase.auth.getSession().then(r => r.data.session);
+
+        if (session) {
+          const meta = session.user.user_metadata || {};
+          document.getElementById('btn-entrar').classList.add('hidden');
+          const chip = document.getElementById('user-chip');
           chip.classList.remove('hidden');
-          btnEntrar.classList.add('hidden');
-          document.getElementById('user-avatar').src = user.picture || '';
-          document.getElementById('user-nome').textContent = user.name.split(' ')[0];
+          document.getElementById('user-avatar').src = meta.avatar_url || '';
+          document.getElementById('user-nome').textContent =
+            (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
+
+          // Se tem acesso, redireciona ao simulado (a menos que veio de sem-acesso)
+          if (!params.has('sem-acesso') && !params.has('planos')) {
+            const res = await fetch('/api/v1/user/me', {
+              headers: { Authorization: `Bearer ${session.access_token}` }
+            }).then(r => r.json()).catch(() => null);
+            if (res?.data?.hasAccess) {
+              window.location.replace('simulado.html');
+              return;
+            }
+          }
+        }
+
+        // Banners contextuais
+        if (params.get('sem-acesso') === '1') {
+          document.getElementById('banner-sem-acesso').classList.remove('hidden');
+          document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (params.get('checkout') === 'ok') {
+          document.getElementById('banner-checkout-ok').classList.remove('hidden');
+        }
+        if (params.has('planos')) {
+          setTimeout(() => document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' }), 200);
         }
       }
 
-      function abrirModal() {
-        document.getElementById('modal-login').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-      }
+      inicializar();
 
-      function fecharModal() {
-        document.getElementById('modal-login').classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-
-      function irParaSimulado() {
-        if (getUser()) {
-          window.location.href = 'simulado.html';
+      // ── Botões que exigem auth ─────────────────────────────────────────────
+      async function irParaSimulado() {
+        const session = await _supabase.auth.getSession().then(r => r.data.session);
+        if (!session) {
+          loginWithGoogle(window.location.origin + '/index.html');
         } else {
-          abrirModal();
+          window.location.href = 'simulado.html';
         }
       }
 
-      atualizarHeader();
-
-      // Botões que exigem auth antes de ir ao simulado
       document.getElementById('btn-entrar').addEventListener('click', irParaSimulado);
       document.getElementById('btn-comecar').addEventListener('click', irParaSimulado);
       document.getElementById('btn-preview-simulado').addEventListener('click', irParaSimulado);
-      document.getElementById('modal-fechar').addEventListener('click', fecharModal);
 
-      // Fechar modal ao clicar fora do card
-      document.getElementById('modal-login').addEventListener('click', function (e) {
-        if (e.target === this) fecharModal();
+      // ── Checkout de assinatura ─────────────────────────────────────────────
+      window.assinar = async function (plano) {
+        const session = await _supabase.auth.getSession().then(r => r.data.session);
+        if (!session) {
+          // Guarda intenção e loga
+          sessionStorage.setItem('plano_intencao', plano);
+          loginWithGoogle(window.location.origin + '/index.html?planos=1');
+          return;
+        }
+
+        // Verifica intenção guardada após login
+        const intencao = sessionStorage.getItem('plano_intencao');
+        if (intencao) { sessionStorage.removeItem('plano_intencao'); }
+
+        const res = await fetch('/api/v1/checkout/session', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plano: intencao || plano }),
+        }).then(r => r.json()).catch(() => null);
+
+        if (res?.data?.url) {
+          window.location.href = res.data.url;
+        } else {
+          alert('Erro ao iniciar checkout. Tente novamente.');
+        }
+      };
+
+      // Retomada de intenção após login OAuth
+      _supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          const intencao = sessionStorage.getItem('plano_intencao');
+          if (intencao) window.assinar(intencao);
+        }
       });
 
-      // Fechar com Escape
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') fecharModal();
-      });
-
-      // Abrir modal automaticamente se veio redirecionado do simulado sem auth
-      if (new URLSearchParams(location.search).get('login') === '1') {
-        abrirModal();
+      // PWA: registra Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
       }
-
-      // Inicializa o botão Google quando a biblioteca carregar
-      window.addEventListener('load', function () {
-        initGoogleAuth('google-signin-btn');
-      });
     })();
   </script>
 </body>
