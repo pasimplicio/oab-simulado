@@ -325,6 +325,8 @@ body.light {
 }
 body.light::before { display: none; }
 body.light .topo { background: rgba(240,244,248,.96); }
+body.light .rodape { background: #e2eaf2; color: #475569; border-top-color: rgba(0,0,0,.12); }
+body.light .rodape a { color: var(--cyan); }
 body.light .barra-progresso { background: rgba(240,244,248,.96); }
 body.light .minimapa-wrapper { background: rgba(0,0,0,.04); }
 body.light .dot-vazio { background: #c7d7ed; border-color: #93b4d8; }
