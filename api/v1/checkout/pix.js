@@ -3,7 +3,7 @@ import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabaseAdmin, setCors, ok, fail, getAuthUser } from '../../_lib/server.js';
 
 const PLANOS = {
-  mensal:     { valor: 0.10,  dias: 30,  descricao: 'Simulado OAB/FGV — Plano Mensal' }, // TESTE: voltar para 19.90
+  mensal:     { valor: 19.90, dias: 30,  descricao: 'Simulado OAB/FGV — Plano Mensal' },
   trimestral: { valor: 49.90, dias: 90,  descricao: 'Simulado OAB/FGV — Plano Trimestral' },
   semestral:  { valor: 79.90, dias: 180, descricao: 'Simulado OAB/FGV — Plano Semestral' },
 };
