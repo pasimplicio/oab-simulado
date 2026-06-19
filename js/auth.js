@@ -30,7 +30,7 @@ async function loginWithGoogle() {
   const { data, error } = await _supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin + '/auth-callback.html',
+      redirectTo: window.location.origin + '/auth-callback',
       skipBrowserRedirect: true,
     },
   });
