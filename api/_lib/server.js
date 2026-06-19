@@ -37,3 +37,32 @@ export function hasActiveAccess(sub) {
   if (sub.acesso_manual) return true;
   return sub.status === 'active' && sub.valido_ate && new Date(sub.valido_ate) > new Date();
 }
+
+const DIAS_PLANO = { mensal: 30, trimestral: 90, semestral: 180 };
+
+// Ativa a assinatura a partir de um pagamento Mercado Pago aprovado.
+// Idempotente (upsert por user_id) — pode ser chamada pelo webhook e pelo polling.
+export async function ativarAssinaturaPorPagamento(pix) {
+  if (!pix || pix.status !== 'approved') return { ativado: false, motivo: 'nao_aprovado' };
+
+  const md     = pix.metadata || {};
+  const userId = md.user_id || md.userId;
+  const plano  = md.plano;
+  if (!userId || !plano) return { ativado: false, motivo: 'metadata_incompleto' };
+
+  const dias      = DIAS_PLANO[plano] || 30;
+  const validoAte = new Date(Date.now() + dias * 24 * 60 * 60 * 1000).toISOString();
+
+  const sb = supabaseAdmin();
+  const { error } = await sb.from('subscriptions').upsert({
+    user_id:       userId,
+    plano,
+    status:        'active',
+    valido_ate:    validoAte,
+    mp_payment_id: pix.id?.toString(),
+    updated_at:    new Date().toISOString(),
+  }, { onConflict: 'user_id' });
+
+  if (error) return { ativado: false, motivo: error.message };
+  return { ativado: true, validoAte, plano };
+}

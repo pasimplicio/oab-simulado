@@ -1,6 +1,7 @@
 // GET /api/v1/checkout/pix-status/[id] — consulta status do pagamento PIX
+// Além de retornar o status, ativa a assinatura quando aprovado (não depende só do webhook).
 import { MercadoPagoConfig, Payment } from 'mercadopago';
-import { setCors, ok, fail } from '../../../_lib/server.js';
+import { setCors, ok, fail, ativarAssinaturaPorPagamento } from '../../../_lib/server.js';
 
 export default async function handler(req, res) {
   setCors(res);
@@ -15,6 +16,15 @@ export default async function handler(req, res) {
   const client  = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
   const payment = new Payment(client);
   const pix     = await payment.get({ id: Number(id) });
+
+  if (pix.status === 'approved') {
+    try {
+      const r = await ativarAssinaturaPorPagamento(pix);
+      if (!r.ativado) console.warn('[pix-status] não ativou:', r.motivo);
+    } catch (e) {
+      console.error('[pix-status] erro ao ativar:', e?.message || e);
+    }
+  }
 
   return ok(res, { status: pix.status });
 }
