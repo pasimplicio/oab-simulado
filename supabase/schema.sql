@@ -21,6 +21,7 @@ create table if not exists public.subscriptions (
   user_id             uuid not null references public.users(id) on delete cascade,
   stripe_customer_id  text,
   stripe_sub_id       text unique,
+  mp_payment_id       text,
   plano               text check (plano in ('mensal', 'trimestral', 'semestral')),
   status              text not null default 'none' check (status in ('active', 'canceled', 'past_due', 'trialing', 'none')),
   valido_ate          timestamptz,

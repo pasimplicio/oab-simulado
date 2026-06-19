@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js?v=2"></script>
   <script src="js/auth.js?v=2"></script>
+  <script src="js/pix-checkout.js"></script>
 </head>
 <body class="landing-page">
 
@@ -276,7 +277,7 @@
       document.getElementById('btn-comecar').addEventListener('click', irParaSimulado);
       document.getElementById('btn-preview-simulado').addEventListener('click', irParaSimulado);
 
-      // ── Checkout de assinatura ─────────────────────────────────────────────
+      // ── Checkout de assinatura (PIX via Mercado Pago) ─────────────────────
       window.assinar = async function (plano) {
         let session = await _supabase.auth.getSession().then(r => r.data.session);
         if (!session) {
@@ -288,17 +289,7 @@
         const intencao = sessionStorage.getItem('plano_intencao');
         if (intencao) sessionStorage.removeItem('plano_intencao');
 
-        const res = await fetch('/api/v1/checkout/session', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plano: intencao || plano }),
-        }).then(r => r.json()).catch(() => null);
-
-        if (res?.data?.url) {
-          window.location.href = res.data.url;
-        } else {
-          alert('Erro ao iniciar checkout. Tente novamente.');
-        }
+        abrirPixCheckout(intencao || plano);
       };
 
       // PWA: registra Service Worker
