@@ -29,6 +29,11 @@
         <a href="#planos">Planos</a>
         <a href="#faq">FAQ</a>
       </nav>
+      <div class="topo-actions" aria-label="Preferências visuais">
+        <button id="btn-font-minus" class="btn-mini" type="button" title="Diminuir fonte">A-</button>
+        <button id="btn-font-plus"  class="btn-mini" type="button" title="Aumentar fonte">A+</button>
+        <button id="btn-tema" class="btn-tema" type="button" title="Alternar tema">Tema claro</button>
+      </div>
       <button class="btn primary" id="btn-entrar" type="button">Entrar com Google</button>
       <div id="user-chip" class="user-chip hidden">
         <img id="user-avatar" class="user-avatar" src="" alt="" />
@@ -300,6 +305,43 @@
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
       }
+    })();
+  </script>
+
+  <script>
+    // ── Tema e tamanho de fonte (compartilhado com simulado.html) ─────────────
+    (function () {
+      const TEMA_KEY  = 'tema';
+      const FONTE_KEY = 'oabFonteEscala';
+      const STEP = 0.05, MIN = 0.9, MAX = 1.25;
+
+      function aplicarFonte(scale) {
+        const s = Math.min(MAX, Math.max(MIN, Number(scale) || 1));
+        document.documentElement.style.fontSize = s * 16 + 'px';
+        localStorage.setItem(FONTE_KEY, String(s));
+      }
+
+      function toggleTema() {
+        const light = document.body.classList.toggle('light');
+        document.getElementById('btn-tema').textContent = light ? 'Tema escuro' : 'Tema claro';
+        localStorage.setItem(TEMA_KEY, light ? 'light' : 'dark');
+      }
+
+      // Aplica preferências salvas
+      const temaGuardado = localStorage.getItem(TEMA_KEY);
+      if (temaGuardado === 'light') {
+        document.body.classList.add('light');
+        document.getElementById('btn-tema').textContent = 'Tema escuro';
+      }
+      aplicarFonte(localStorage.getItem(FONTE_KEY) || '1');
+
+      document.getElementById('btn-tema').addEventListener('click', toggleTema);
+      document.getElementById('btn-font-plus').addEventListener('click',  function () {
+        aplicarFonte((Number(localStorage.getItem(FONTE_KEY)) || 1) + STEP);
+      });
+      document.getElementById('btn-font-minus').addEventListener('click', function () {
+        aplicarFonte((Number(localStorage.getItem(FONTE_KEY)) || 1) - STEP);
+      });
     })();
   </script>
 </body>
