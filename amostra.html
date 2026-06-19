@@ -7,6 +7,10 @@
   <meta name="description" content="Experimente grátis: responda 5 questões no estilo FGV e veja o gabarito na hora, sem cadastro." />
   <link rel="stylesheet" href="css/styles.css?v=5" />
   <link rel="manifest" href="manifest.json" />
+  <script src="js/env.js?v=2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js?v=2"></script>
+  <script src="js/auth.js?v=4"></script>
 </head>
 <body class="simulado-page">
 
@@ -23,7 +27,13 @@
       <div class="subtitulo">Amostra grátis — sem cadastro</div>
       <div class="topo-actions">
         <a class="btn small" href="/#planos">Ver planos</a>
-        <a class="btn small primary" href="/?login=1">Entrar</a>
+        <button class="btn small primary" id="btn-entrar" type="button">Entrar com Google</button>
+        <div class="user-chip user-chip-sm hidden" id="user-chip">
+          <img id="user-avatar" class="user-avatar" src="" alt="" />
+          <span id="user-nome" class="user-nome"></span>
+          <a id="btn-acessar-simulado" href="simulado.html" class="btn small primary hidden">Acessar</a>
+          <button class="btn small" type="button" onclick="logoutUser()">Sair</button>
+        </div>
       </div>
     </div>
   </header>
@@ -72,6 +82,48 @@
     </div>
   </footer>
 
+  <!-- Detecção de sessão: mostra o usuário logado no header -->
+  <script>
+    (function () {
+      if (typeof _supabase === 'undefined') return;
+
+      function mostrarChip(session) {
+        const meta = session.user.user_metadata || {};
+        document.getElementById('btn-entrar')?.classList.add('hidden');
+        const chip = document.getElementById('user-chip');
+        chip?.classList.remove('hidden');
+        const av = document.getElementById('user-avatar');
+        const nm = document.getElementById('user-nome');
+        if (av) av.src = meta.avatar_url || '';
+        if (nm) nm.textContent = (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
+        document.getElementById('btn-acessar-simulado')?.classList.remove('hidden');
+      }
+
+      function esconderChip() {
+        document.getElementById('user-chip')?.classList.add('hidden');
+        document.getElementById('btn-entrar')?.classList.remove('hidden');
+      }
+
+      _supabase.auth.getSession().then(r => { if (r.data.session) mostrarChip(r.data.session); });
+
+      _supabase.auth.onAuthStateChange((event, session) => {
+        if (session && ['SIGNED_IN', 'INITIAL_SESSION', 'TOKEN_REFRESHED', 'USER_UPDATED'].includes(event)) {
+          mostrarChip(session);
+        } else if (event === 'SIGNED_OUT') {
+          esconderChip();
+        }
+      });
+
+      document.getElementById('btn-entrar')?.addEventListener('click', async () => {
+        try {
+          const session = await loginWithGoogle();
+          if (session) mostrarChip(session);
+        } catch (e) {
+          alert('Erro ao iniciar login: ' + e.message);
+        }
+      });
+    })();
+  </script>
   <script src="js/config.js"></script>
   <script src="js/questions.js"></script>
   <script src="js/amostra.js"></script>
