@@ -67,7 +67,7 @@ async function loginWithGoogle() {
 
 async function logoutUser() {
   await _supabase.auth.signOut();
-  window.location.href = 'index.html';
+  window.location.href = '/';
 }
 
 // ─── Guard para simulado.html ─────────────────────────────────────────────────
@@ -76,7 +76,7 @@ async function requireAccess() {
   const result = await checkAccess();
   if (!result.hasAccess) {
     const reason = result.reason === 'not_logged_in' ? 'login=1' : 'sem-acesso=1';
-    window.location.replace('index.html?' + reason);
+    window.location.replace('/?' + reason);
     return false;
   }
   return true;
