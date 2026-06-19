@@ -211,17 +211,7 @@
       // ── Detecta sessão Supabase e atualiza header ──────────────────────────
       async function inicializar() {
         const session = await _supabase.auth.getSession().then(r => r.data.session);
-
-        if (session) {
-          const meta = session.user.user_metadata || {};
-          document.getElementById('btn-entrar').classList.add('hidden');
-          const chip = document.getElementById('user-chip');
-          chip.classList.remove('hidden');
-          document.getElementById('user-avatar').src = meta.avatar_url || '';
-          document.getElementById('user-nome').textContent =
-            (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
-
-        }
+        if (session) mostrarChipUsuario(session);
 
         // Banners contextuais
         if (params.get('sem-acesso') === '1') {
@@ -238,24 +228,43 @@
 
       inicializar();
 
-      // ── Botões que exigem auth ─────────────────────────────────────────────
-      async function irParaSimulado() {
-        // Verifica se o cliente Supabase carregou
+      // ── Atualiza header com dados do usuário logado ───────────────────────
+      function mostrarChipUsuario(session) {
+        const meta = session.user.user_metadata || {};
+        document.getElementById('btn-entrar').classList.add('hidden');
+        const chip = document.getElementById('user-chip');
+        chip.classList.remove('hidden');
+        document.getElementById('user-avatar').src = meta.avatar_url || '';
+        document.getElementById('user-nome').textContent =
+          (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
+      }
+
+      // ── Login via popup (não sai da landing) ──────────────────────────────
+      async function fazerLogin() {
         if (typeof _supabase === 'undefined') {
           alert('Erro: biblioteca de autenticação não carregou. Recarregue a página.');
-          return;
+          return null;
         }
         try {
-          const session = await _supabase.auth.getSession().then(r => r.data.session);
-          if (!session) {
-            await loginWithGoogle(window.location.origin + '/index.html');
-          } else {
-            window.location.href = 'simulado.html';
-          }
+          const session = await loginWithGoogle();
+          if (session) mostrarChipUsuario(session);
+          return session;
         } catch (e) {
           alert('Erro ao iniciar login: ' + e.message);
           console.error(e);
+          return null;
         }
+      }
+
+      // ── Botões que exigem auth ─────────────────────────────────────────────
+      async function irParaSimulado() {
+        let session = await _supabase.auth.getSession().then(r => r.data.session);
+        if (!session) {
+          session = await fazerLogin();
+          // Após login bem-sucedido o usuário permanece na landing; clica de novo para entrar
+          return;
+        }
+        window.location.href = 'simulado.html';
       }
 
       document.getElementById('btn-entrar').addEventListener('click', irParaSimulado);
@@ -264,17 +273,15 @@
 
       // ── Checkout de assinatura ─────────────────────────────────────────────
       window.assinar = async function (plano) {
-        const session = await _supabase.auth.getSession().then(r => r.data.session);
+        let session = await _supabase.auth.getSession().then(r => r.data.session);
         if (!session) {
-          // Guarda intenção e loga
           sessionStorage.setItem('plano_intencao', plano);
-          loginWithGoogle(window.location.origin + '/index.html?planos=1');
-          return;
+          session = await fazerLogin();
+          if (!session) { sessionStorage.removeItem('plano_intencao'); return; }
         }
 
-        // Verifica intenção guardada após login
         const intencao = sessionStorage.getItem('plano_intencao');
-        if (intencao) { sessionStorage.removeItem('plano_intencao'); }
+        if (intencao) sessionStorage.removeItem('plano_intencao');
 
         const res = await fetch('/api/v1/checkout/session', {
           method: 'POST',
@@ -288,14 +295,6 @@
           alert('Erro ao iniciar checkout. Tente novamente.');
         }
       };
-
-      // Retomada de intenção após login OAuth
-      _supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          const intencao = sessionStorage.getItem('plano_intencao');
-          if (intencao) window.assinar(intencao);
-        }
-      });
 
       // PWA: registra Service Worker
       if ('serviceWorker' in navigator) {

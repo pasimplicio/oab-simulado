@@ -26,14 +26,43 @@ async function checkAccess() {
 }
 
 // ─── Login / Logout ──────────────────────────────────────────────────────────
-async function loginWithGoogle(redirectTo) {
-  const { error } = await _supabase.auth.signInWithOAuth({
+async function loginWithGoogle() {
+  const { data, error } = await _supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: redirectTo || (window.location.origin + '/index.html'),
+      redirectTo: window.location.origin + '/auth-callback.html',
+      skipBrowserRedirect: true,
     },
   });
   if (error) throw new Error(error.message);
+
+  const left = Math.round((screen.width  - 500) / 2);
+  const top  = Math.round((screen.height - 650) / 2);
+  const popup = window.open(
+    data.url, 'oab-login',
+    `width=500,height=650,left=${left},top=${top},resizable=yes,scrollbars=yes`
+  );
+  if (!popup) throw new Error('Popup bloqueado. Permita popups para este site e tente novamente.');
+
+  return new Promise((resolve) => {
+    let done = false;
+
+    const finish = async (popupJaFechado) => {
+      if (done) return;
+      done = true;
+      sub.unsubscribe();
+      clearInterval(poll);
+      if (!popupJaFechado && !popup.closed) popup.close();
+      const { data: { session } } = await _supabase.auth.getSession();
+      resolve(session);
+    };
+
+    const { data: { subscription: sub } } = _supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) finish(false);
+    });
+
+    const poll = setInterval(() => { if (popup.closed) finish(true); }, 500);
+  });
 }
 
 async function logoutUser() {
