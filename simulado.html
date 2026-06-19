@@ -49,6 +49,9 @@
     </div>
   </header>
 
+  <!-- Banner de vencimento próximo -->
+  <div id="banner-venc-sim" class="hidden"></div>
+
   <main class="container">
     <div id="mensagem-simulado" class="mensagem-simulado hidden" role="status" aria-live="polite"></div>
 
@@ -246,6 +249,28 @@
         const nm = document.getElementById('sim-nome');
         if (av) av.src = meta.avatar_url || '';
         if (nm) nm.textContent = (meta.full_name || meta.name || session.user.email || '').split(' ')[0];
+
+        // Verifica vencimento próximo e exibe banner
+        try {
+          const res = await fetch('/api/v1/user/me', {
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          }).then(r => r.json());
+          const sub = res?.data?.subscription;
+          if (sub?.status === 'active' && sub?.valido_ate) {
+            const dias = Math.ceil((new Date(sub.valido_ate) - Date.now()) / 86400000);
+            if (dias <= 7) {
+              const banner = document.getElementById('banner-venc-sim');
+              if (banner) {
+                const urgente = dias <= 3;
+                banner.className = 'banner-vencimento' + (urgente ? ' banner-urgente' : '');
+                banner.innerHTML = `<span>${urgente
+                  ? `⚠️ Seu plano vence em ${dias} dia${dias !== 1 ? 's' : ''}! Renove agora.`
+                  : `⏰ Seu plano vence em ${dias} dias. Renove para continuar acessando.`
+                }</span><a href="index.html#planos" class="btn small primary">Renovar</a>`;
+              }
+            }
+          }
+        } catch (_) {}
       }
     })();
   </script>

@@ -781,6 +781,48 @@ body.light .modal-fechar { color: #64748b; }
 .banner-aviso.hidden,
 .banner-sucesso.hidden { display: none; }
 
+/* ─── Banner vencimento próximo ──────────────────────────────────────────── */
+.banner-vencimento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 24px;
+  font-size: .9rem;
+  font-weight: 500;
+  background: rgba(255,160,0,.12);
+  color: #ffa040;
+  border-bottom: 1px solid rgba(255,160,0,.25);
+}
+.banner-vencimento.banner-urgente {
+  background: rgba(239,68,68,.14);
+  color: #f87171;
+  border-bottom: 1px solid rgba(239,68,68,.3);
+}
+.banner-vencimento.hidden { display: none; }
+
+/* ─── Card status assinatura (landing) ───────────────────────────────────── */
+.card-assinatura {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  background: rgba(0,180,216,.08);
+  border-bottom: 1px solid rgba(0,180,216,.18);
+  font-size: .9rem;
+}
+.card-assinatura.hidden { display: none; }
+.card-assinatura-info   { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.assinatura-badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+.assinatura-detalhe { color: var(--muted); font-size: .85rem; }
+
 /* ─── Plan tag ────────────────────────────────────────────────────────────── */
 .plan-tag {
   display: inline-block;
