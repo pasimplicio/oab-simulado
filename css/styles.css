@@ -820,7 +820,10 @@ body.light .modal-fechar { color: #64748b; }
   border-radius: 20px;
   font-size: .78rem;
   font-weight: 700;
+  white-space: nowrap;
 }
+.assinatura-badge.badge-active { background: rgba(0,200,100,.15); color: #00c864; }
+.assinatura-badge.badge-manual { background: rgba(0,150,255,.15); color: #4db6ff; }
 .assinatura-detalhe { color: var(--muted); font-size: .85rem; }
 
 /* ─── Plan tag ────────────────────────────────────────────────────────────── */
