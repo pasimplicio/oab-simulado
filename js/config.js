@@ -8,7 +8,7 @@
  */
 
 const SIMULADO_CONFIG = {
-  exame: "47º Exame de Ordem Unificado",
+  exame: "Exame de Ordem Unificado",
   banca: "FGV",
   totalQuestoes: 80,
   notaCorte: 40,
