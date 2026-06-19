@@ -279,17 +279,26 @@
 
       // ── Checkout de assinatura (PIX via Mercado Pago) ─────────────────────
       window.assinar = async function (plano) {
-        let session = await _supabase.auth.getSession().then(r => r.data.session);
-        if (!session) {
-          sessionStorage.setItem('plano_intencao', plano);
-          session = await fazerLogin();
-          if (!session) { sessionStorage.removeItem('plano_intencao'); return; }
+        try {
+          if (typeof abrirPixCheckout === 'undefined') {
+            alert('Erro: módulo de pagamento não carregou. Recarregue a página (Ctrl+Shift+R).');
+            return;
+          }
+          let session = await _supabase.auth.getSession().then(r => r.data.session);
+          if (!session) {
+            sessionStorage.setItem('plano_intencao', plano);
+            session = await fazerLogin();
+            if (!session) { sessionStorage.removeItem('plano_intencao'); return; }
+          }
+
+          const intencao = sessionStorage.getItem('plano_intencao');
+          if (intencao) sessionStorage.removeItem('plano_intencao');
+
+          abrirPixCheckout(intencao || plano);
+        } catch (e) {
+          alert('Erro ao abrir checkout: ' + e.message);
+          console.error(e);
         }
-
-        const intencao = sessionStorage.getItem('plano_intencao');
-        if (intencao) sessionStorage.removeItem('plano_intencao');
-
-        abrirPixCheckout(intencao || plano);
       };
 
       // PWA: registra Service Worker
