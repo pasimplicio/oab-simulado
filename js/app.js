@@ -535,10 +535,12 @@ function renderResultado() {
       <p class="corte">Nota de corte: ${corte} pontos (50%)${segundosGastos ? ` - tempo: ${formatarTempo(segundosGastos)}` : ""}${tempoMedio ? ` - media: ${formatarTempo(tempoMedio)} por questao` : ""}</p>
     </div>
     <h3>Desempenho por disciplina</h3>
-    <table class="tabela-desempenho">
-      <thead><tr><th>Disciplina</th><th>Acertos</th><th>Aproveitamento</th></tr></thead>
-      <tbody>${linhas}</tbody>
-    </table>
+    <div class="table-scroll">
+      <table class="tabela-desempenho">
+        <thead><tr><th>Disciplina</th><th>Acertos</th><th>Aproveitamento</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table>
+    </div>
     ${revisar
       ? `<h3>Mapa de revis\u00e3o</h3><ul class="mapa-revisao">${revisar}</ul>`
       : `<p class="parabens">Excelente! Nenhuma disciplina abaixo de 60%.</p>`}`;

@@ -32,7 +32,7 @@ There is no lint or test command. Sanity-check API files with `node --check api/
 
 ## Cache busting — required when editing CSS/JS
 
-Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=6`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=6`, `auth.js?v=4`, `env.js?v=2`, `supabase.js?v=2`.
+Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=7`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=7`, `auth.js?v=4`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
 
 ## clean URLs (vercel.json)
 

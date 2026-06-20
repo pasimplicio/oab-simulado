@@ -933,3 +933,73 @@ body.light .modal-fechar:hover { color: #1e293b; }
 }
 body.light .pix-modal-box { background: #fff; }
 body.light .pix-codigo-input { background: #f1f5f9; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MELHORIAS MOBILE / TOUCH  (aditivo — não altera o layout desktop)
+   A maioria dos acessos é via celular. Foco: alvos de toque ≥44px, sem zoom
+   indesejado do iOS, modais e tabelas confortáveis em telas pequenas.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Toque mais responsivo: remove o delay de 300ms e suaviza o highlight nativo */
+.btn, .btn-mini, .btn-tema, .btn-flag, .alternativa, .dot,
+.cselect-btn, .check-card, .faq-list summary, .modal-fechar, .pix-modal-close,
+.landing-menu a, .switch {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,180,216,.18);
+}
+
+/* Rolagem horizontal suave quando uma tabela não couber, em vez de cortar
+   (o body usa overflow-x:hidden). Requer envolver a tabela em .table-scroll. */
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Inputs nunca abaixo de 16px → impede o zoom automático do iOS ao focar */
+input, select, textarea { font-size: max(16px, 1em); }
+
+@media (max-width: 640px) {
+  /* — Alvos de toque ≥44px nos controles principais — */
+  .btn { min-height: 44px; }
+  .btn.small, .btn-mini,
+  .topo-actions .btn-tema { padding: 10px 12px; min-height: 40px; }
+  .btn-tema { width: 42px; height: 42px; }
+
+  .btn-flag {
+    padding: 8px; min-width: 40px; min-height: 40px;
+    font-size: 1.05rem; display: inline-grid; place-items: center;
+  }
+
+  .modal-fechar, .pix-modal-close {
+    top: 8px; right: 8px;
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+  }
+
+  .nav-mp { gap: 12px; }
+  .nav-mp .btn { flex: 1; min-height: 46px; }
+
+  /* Alternativas e selects com área de toque maior */
+  .alternativa { padding: 13px 14px; }
+  .cselect-btn, .form-field select { padding: 12px 14px; }
+  .cselect-list li { padding: 13px 14px; }
+  .check-card { padding: 12px; }
+  .faq-list summary { padding: 4px 0; }
+
+  /* Stickies coerentes com o header de 54px (evita sobreposição) */
+  .barra-progresso, .mensagem-simulado { top: 54px; }
+
+  /* Tabelas: célula respira e quebra linha em vez de estourar a largura */
+  th, td { padding: 8px 7px; }
+  .tabela-desempenho th, .tabela-desempenho td { font-size: .8rem; white-space: normal; }
+  .mini-bar { width: 56px; margin-right: 6px; }
+
+  /* Botões fixos respeitam a safe-area de aparelhos com notch/home-bar */
+  #pwa-install { bottom: calc(16px + env(safe-area-inset-bottom)); right: 14px; left: 14px; max-width: none; }
+}
+
+/* Telas bem pequenas (≤380px): reduz o respiro lateral de modais e cards */
+@media (max-width: 380px) {
+  .modal-card { padding: 34px 20px 26px; }
+  .pix-modal-box { padding: 26px 18px; }
+  .card { padding: 18px 14px; }
+  .landing-container { padding: 0 18px; }
+  .resultado-card .nota { font-size: 1.9rem; }
+}

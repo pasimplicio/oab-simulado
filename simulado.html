@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulado OAB - PSDEV Sistemas</title>
-  <link rel="stylesheet" href="css/styles.css?v=6" />
+  <link rel="stylesheet" href="css/styles.css?v=7" />
   <link rel="manifest" href="manifest.json" />
   <!-- Oculta o body até confirmação de acesso -->
   <style>body { visibility: hidden; }</style>
@@ -140,10 +140,12 @@
 
       <div class="card">
         <h3>Distribuição por disciplina (prova-base)</h3>
-        <table id="tabela-distribuicao" class="tabela-distribuicao">
-          <thead><tr><th>Disciplina</th><th class="center">Questões</th><th class="center">%</th></tr></thead>
-          <tbody></tbody>
-        </table>
+        <div class="table-scroll">
+          <table id="tabela-distribuicao" class="tabela-distribuicao">
+            <thead><tr><th>Disciplina</th><th class="center">Questões</th><th class="center">%</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
         <p class="nota-rodape">
           O sistema usa um banco de questões para treino OAB/FGV com gabarito oficial.
         </p>
@@ -225,7 +227,7 @@
   <script src="js/config.js"></script>
   <script src="js/questions.js"></script>
   <script src="js/questions_oab.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=1"></script>
   <script>
     // Guard async: verifica acesso via API antes de revelar a página
     (async function () {
