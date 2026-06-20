@@ -38,6 +38,10 @@ Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8
 
 `cleanUrls: true` strips `.html` from every URL. **Always link without the extension and prefer absolute paths**: `/`, `/amostra`, `/admin`, `/privacidade`, `/termos`. Requesting `/index.html` triggers a redirect that, combined with the service worker, previously caused `ERR_FAILED` — never hardcode `index.html` in redirects (`auth.js` redirects to `/`).
 
+## SEO
+
+`robots.txt` (allows all; disallows `/admin`, `/auth-callback`; points to the sitemap) and `sitemap.xml` (the 4 public URLs: `/`, `/amostra`, `/privacidade`, `/termos`) live at the repo root — Vercel serves them as-is. Public pages carry `<link rel="canonical">`, Open Graph + Twitter tags, and `meta robots index,follow`; `index.html` also has a WebSite JSON-LD block. Private pages (`admin.html`, `simulado.html`) carry `meta robots noindex,nofollow`. The og/twitter/canonical URLs are absolute on `https://oabsimulado.sistemaspsdev.com.br`. **When adding a new public page, also add it to `sitemap.xml` and give it a canonical + OG tags.** Indexing still requires the owner to register the site in Google Search Console and submit the sitemap (a manual, one-time action).
+
 ## Pages
 
 ```
