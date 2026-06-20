@@ -22,7 +22,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
   background: var(--navy);
   color: var(--text);
   line-height: 1.6;
@@ -1002,4 +1002,63 @@ input, select, textarea { font-size: max(16px, 1em); }
   .card { padding: 18px 14px; }
   .landing-container { padding: 0 18px; }
   .resultado-card .nota { font-size: 1.9rem; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADER — botões de auth modernos + cabeçalho compacto no mobile
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Reforço anti-overflow horizontal */
+html { overflow-x: hidden; }
+
+/* Botões "Entrar com Google" / "Acessar" — estilo pill moderno (azul→ciano) */
+#btn-entrar,
+#btn-acessar-simulado {
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--blue2) 0%, var(--cyan) 100%);
+  border-color: transparent; color: #fff; font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0,87,248,.30), 0 1px 0 rgba(255,255,255,.15) inset;
+  letter-spacing: .01em;
+}
+#btn-entrar:hover,
+#btn-acessar-simulado:hover {
+  box-shadow: 0 6px 22px rgba(0,180,216,.45), 0 1px 0 rgba(255,255,255,.2) inset;
+  transform: translateY(-1px);
+}
+/* Botão "Sair" — discreto e em pill, combinando com o primary */
+.user-chip .btn.small:not(.primary) {
+  border-radius: 999px; background: rgba(255,255,255,.06);
+}
+body.light .user-chip .btn.small:not(.primary) { background: rgba(0,0,0,.04); }
+
+/* Cabeçalho compacto no mobile: prioriza marca + ação principal */
+@media (max-width: 720px) {
+  .topo-inner { gap: 8px; }
+  /* Subtítulo e divisor do header do simulado: redundantes em telas estreitas */
+  .topo .subtitulo, .topo-divider { display: none; }
+  /* Esconde controles secundários que estouravam a largura */
+  #btn-font-minus, #btn-font-plus { display: none; }
+  .user-chip #assinatura-badge { display: none; }
+  /* Botão de tema vira ícone compacto (o texto "Tema claro/escuro" é trocado por JS) */
+  .topo-actions .btn-tema {
+    width: 40px; height: 40px; padding: 0;
+    font-size: 0; border-radius: 50%; flex-shrink: 0;
+  }
+  .topo-actions .btn-tema::after { content: "🌗"; font-size: 1.05rem; }
+  /* Itens encolhem em vez de transbordar */
+  #user-chip, .topo-actions { min-width: 0; }
+  .user-chip .user-nome { max-width: 88px; }
+  /* Texto longo do botão de login não empurra o layout */
+  #btn-entrar { padding: 10px 16px; white-space: nowrap; }
+}
+
+/* Em telas pequenas, o nome some — avatar + ações bastam */
+@media (max-width: 460px) {
+  .user-chip .user-nome { display: none; }
+  .topo-inner.landing-nav { gap: 6px; }
+}
+
+/* Rodapé com mais respiro no mobile */
+@media (max-width: 640px) {
+  .rodape { padding: 24px 16px; font-size: .8rem; line-height: 1.7; }
 }

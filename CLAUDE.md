@@ -32,7 +32,7 @@ There is no lint or test command. Sanity-check API files with `node --check api/
 
 ## Cache busting — required when editing CSS/JS
 
-Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=7`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=7`, `auth.js?v=4`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
+Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=8`, `auth.js?v=4`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
 
 ## clean URLs (vercel.json)
 
@@ -138,6 +138,7 @@ Free Supabase pauses after ~7 days of inactivity. `api/v1/ping.js` runs a trivia
 
 ## CSS — css/styles.css (single file)
 
+- Font: **Inter** is loaded from Google Fonts in every HTML `<head>` (with `preconnect`) and is first in the `body` font stack, so desktop and mobile render the same typeface (previously `'Segoe UI'` only existed on Windows, so phones fell back to Roboto/SF — inconsistent).
 - CSS variables in `:root` (dark default); `body.light` overrides all of them (light theme). `color-scheme` on `:root`/`body.light` controls native UI.
 - Body classes `.landing-page` / `.simulado-page` scope styles. Custom `.cselect` replaces native `<select>` (native dropdown popup ignores theme on Windows Chrome).
 - Breakpoints: `@media (max-width: 900px)` (landing grids + hides hero preview card), `@media (max-width: 640px)` (simulator mobile). `overflow-x: hidden` on `body`.
