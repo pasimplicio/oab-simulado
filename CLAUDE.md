@@ -32,7 +32,7 @@ There is no lint or test command. Sanity-check API files with `node --check api/
 
 ## Cache busting — required when editing CSS/JS
 
-Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=9`, `auth.js?v=5`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
+Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=11`, `auth.js?v=8`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
 
 ## clean URLs (vercel.json)
 
@@ -76,8 +76,11 @@ js/admin.js        Admin panel logic (calls /api/v1/admin/*)
 
 ## Auth & access gating — js/auth.js
 
-Supabase OAuth (Google), **popup-based** so the user never leaves the landing:
+Two methods, both staying on the landing: **e-mail/senha** (Supabase password auth) and **Google OAuth** (popup-based).
 
+**Auth modal (index.html):** `#auth-modal` has two screens — login and cadastro — toggled by `trocarTelaAuth()`. `fazerLogin()` no longer logs in directly; it calls `abrirAuthModal('login')` which **returns a Promise** that resolves with the session when the user authenticates (e-mail or Google) or `null` if they close it. So `irParaSimulado()` / `assinar()` just `await fazerLogin()` and continue automatically once logged in. There is no "esqueci minha senha" yet (planned phase 2 — needs SMTP). Facebook/Apple buttons are intentionally omitted.
+
+- `loginWithEmail(email, senha)` / `signUpWithEmail(nome, email, senha)` — wrap `signInWithPassword` / `signUp` (the latter passes `full_name` into `user_metadata`). Signup assumes **"Confirm email" is OFF** in the Supabase dashboard (immediate access); if it's ON, `signUp` returns a null session and the UI shows a "confirme seu e-mail" message. `traduzirErroAuth()` maps Supabase error strings to PT-BR.
 - `loginWithGoogle()` — `signInWithOAuth({ skipBrowserRedirect: true })` + `window.open()` to `/auth-callback`; resolves the session (retries `getSession()` for ~2s while it hydrates from localStorage). The landing also registers a persistent `onAuthStateChange` listener so the header updates whenever the session changes.
 - `checkAccess()` → calls `GET /api/v1/user/me` (server decides access) → returns `{ hasAccess, reason, subscription }`. **Mobile-robust:** waits for the session to hydrate (`getSessionResiliente`), and on a `401` (expired `access_token` — common when a phone returns from background before auto-refresh runs) it calls `refreshSession()` and retries instead of treating it as "no subscription". A transient network/API failure returns `reason: 'api_error'` (never silently sends a paying user to the plans page over an expired token).
 - `requireAccess()` — used by simulado.html; redirects to `/?login=1` (not logged in) or `/?sem-acesso=1` (no subscription).

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redefinir senha — Simulado OAB/FGV</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
+  <script src="js/env.js?v=2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js?v=2"></script>
+  <script src="js/auth.js?v=8"></script>
+</head>
+<body class="landing-page">
+  <main style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div class="auth-box" style="position:relative;">
+      <h2 class="auth-titulo">Redefinir senha</h2>
+
+      <!-- Estado: carregando / validando o link -->
+      <div id="estado-carregando">
+        <p class="auth-sub" style="text-align:center;">Validando o link de recuperação…</p>
+      </div>
+
+      <!-- Estado: link inválido/expirado -->
+      <div id="estado-invalido" class="hidden">
+        <div class="auth-msg erro" style="display:block;">
+          Link inválido ou expirado. Solicite um novo e-mail de recuperação na página inicial.
+        </div>
+        <a class="btn primary grande auth-submit" href="/" style="text-align:center; text-decoration:none;">Voltar ao início</a>
+      </div>
+
+      <!-- Estado: formulário de nova senha -->
+      <div id="estado-form" class="hidden">
+        <p class="auth-sub">Crie uma nova senha para sua conta.</p>
+        <div class="auth-msg hidden" id="rs-msg" role="alert"></div>
+        <label class="auth-field">
+          <span>Nova senha</span>
+          <div class="auth-senha-wrap">
+            <input type="password" id="rs-senha" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" />
+            <button type="button" class="auth-olho" data-target="rs-senha" aria-label="Mostrar senha">👁</button>
+          </div>
+        </label>
+        <label class="auth-field">
+          <span>Confirmar nova senha</span>
+          <div class="auth-senha-wrap">
+            <input type="password" id="rs-senha2" autocomplete="new-password" placeholder="Repita a senha" />
+            <button type="button" class="auth-olho" data-target="rs-senha2" aria-label="Mostrar senha">👁</button>
+          </div>
+        </label>
+        <button class="btn primary grande auth-submit" id="rs-salvar" type="button">Salvar nova senha</button>
+      </div>
+
+      <!-- Estado: sucesso -->
+      <div id="estado-sucesso" class="hidden">
+        <div class="auth-msg sucesso" style="display:block;">Senha alterada com sucesso!</div>
+        <a class="btn primary grande auth-submit" href="/" style="text-align:center; text-decoration:none;">Ir para o início</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const mostrar = (qual) => {
+        ['estado-carregando', 'estado-invalido', 'estado-form', 'estado-sucesso']
+          .forEach(id => $(id).classList.toggle('hidden', id !== qual));
+      };
+
+      // Olho mostrar/ocultar
+      document.querySelectorAll('.auth-olho').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const input = $(btn.dataset.target);
+          if (!input) return;
+          const ocultando = input.type === 'password';
+          input.type = ocultando ? 'text' : 'password';
+          btn.setAttribute('aria-label', ocultando ? 'Ocultar senha' : 'Mostrar senha');
+        });
+      });
+
+      function setMsg(texto, tipo) {
+        const el = $('rs-msg');
+        el.textContent = texto; el.className = 'auth-msg ' + tipo;
+      }
+
+      // O supabase-js (detectSessionInUrl: true) processa o token de recovery da URL
+      // e dispara PASSWORD_RECOVERY / cria a sessão. Validamos se há sessão.
+      let pronto = false;
+      function liberarForm() { if (!pronto) { pronto = true; mostrar('estado-form'); } }
+
+      _supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY' || (session && event === 'SIGNED_IN')) liberarForm();
+      });
+
+      // Fallback: depois de um instante, checa se a sessão de recovery existe
+      setTimeout(async () => {
+        const { data } = await _supabase.auth.getSession();
+        if (data.session) liberarForm();
+        else if (!pronto) mostrar('estado-invalido');
+      }, 1500);
+
+      $('rs-salvar').addEventListener('click', async () => {
+        const s1 = $('rs-senha').value, s2 = $('rs-senha2').value;
+        if (!s1 || !s2) { setMsg('Preencha os dois campos.', 'erro'); return; }
+        if (s1.length < 6) { setMsg('A senha deve ter pelo menos 6 caracteres.', 'erro'); return; }
+        if (s1 !== s2) { setMsg('As senhas não conferem.', 'erro'); return; }
+        const btn = $('rs-salvar');
+        btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Salvando…';
+        try {
+          await atualizarSenha(s1);
+          mostrar('estado-sucesso');
+        } catch (e) {
+          setMsg(traduzirErroAuth(e.message), 'erro');
+          btn.disabled = false; btn.textContent = txt;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

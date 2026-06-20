@@ -104,6 +104,75 @@ async function logoutUser() {
   window.location.href = '/';
 }
 
+// ─── Login / Cadastro por e-mail e senha ──────────────────────────────────────
+async function loginWithEmail(email, senha) {
+  const { data, error } = await _supabase.auth.signInWithPassword({
+    email: (email || '').trim(),
+    password: senha,
+  });
+  if (error) throw error;
+  return data.session;
+}
+
+async function signUpWithEmail(nome, email, senha) {
+  const { data, error } = await _supabase.auth.signUp({
+    email: (email || '').trim(),
+    password: senha,
+    options: { data: { full_name: (nome || '').trim() } },
+  });
+  if (error) throw error;
+  // Com "Confirm email" desligado, a sessão já vem pronta (acesso imediato).
+  // Se estiver ligado, session vem null → o chamador trata pedindo confirmação.
+  return data.session;
+}
+
+// Envia o e-mail de recuperação de senha (link leva para /redefinir-senha)
+async function resetPassword(email) {
+  const { error } = await _supabase.auth.resetPasswordForEmail((email || '').trim(), {
+    redirectTo: window.location.origin + '/redefinir-senha',
+  });
+  if (error) throw error;
+}
+
+// Define a nova senha (chamado na página /redefinir-senha, dentro da sessão de recovery)
+async function atualizarSenha(novaSenha) {
+  const { error } = await _supabase.auth.updateUser({ password: novaSenha });
+  if (error) throw error;
+}
+
+// Gera um avatar (data URI SVG) com as iniciais do nome — usado quando o
+// usuário entrou por e-mail/senha e não tem foto de perfil (Google).
+function avatarIniciais(nome, email) {
+  const base = ((nome || '').trim() || (email || '').trim() || '?');
+  const partes = base.split(/\s+/).filter(Boolean);
+  let ini = (partes[0] ? partes[0][0] : '') + (partes.length > 1 ? partes[partes.length - 1][0] : '');
+  ini = (ini || base[0] || '?').toUpperCase();
+  let h = 0;
+  for (let i = 0; i < base.length; i++) h = base.charCodeAt(i) + ((h << 5) - h);
+  const bg = `hsl(${Math.abs(h) % 360}, 60%, 45%)`;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">` +
+    `<rect width="64" height="64" fill="${bg}"/>` +
+    `<text x="50%" y="50%" dy=".35em" text-anchor="middle" fill="#fff" ` +
+    `font-family="Inter,Segoe UI,system-ui,sans-serif" font-size="28" font-weight="700">${ini}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// Traduz mensagens de erro do Supabase para PT-BR amigável
+function traduzirErroAuth(msg) {
+  const m = (msg || '').toLowerCase();
+  if (m.includes('invalid login credentials'))        return 'E-mail ou senha incorretos.';
+  if (m.includes('user already registered') ||
+      m.includes('already been registered'))          return 'Este e-mail já está cadastrado. Faça login.';
+  if (m.includes('password should be at least'))      return 'A senha deve ter pelo menos 6 caracteres.';
+  if (m.includes('unable to validate email') ||
+      m.includes('invalid email'))                    return 'E-mail inválido.';
+  if (m.includes('email not confirmed'))              return 'Confirme seu e-mail antes de entrar.';
+  if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas. Aguarde um instante e tente novamente.';
+  if (m.includes('network') || m.includes('failed to fetch')) return 'Falha de conexão. Verifique sua internet.';
+  return msg || 'Não foi possível concluir. Tente novamente.';
+}
+
 // ─── Guard para simulado.html ─────────────────────────────────────────────────
 // Retorna true se acesso liberado; redireciona e retorna false caso contrário.
 async function requireAccess() {

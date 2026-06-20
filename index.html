@@ -44,12 +44,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=9" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
   <link rel="manifest" href="manifest.json" />
   <script src="js/env.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js?v=2"></script>
-  <script src="js/auth.js?v=5"></script>
+  <script src="js/auth.js?v=8"></script>
   <script src="js/pix-checkout.js"></script>
 </head>
 <body class="landing-page">
@@ -74,7 +74,7 @@
         <button id="btn-font-plus"  class="btn-mini" type="button" title="Aumentar fonte">A+</button>
         <button id="btn-tema" class="btn-tema" type="button" title="Alternar tema">Tema claro</button>
       </div>
-      <button class="btn primary" id="btn-entrar" type="button">Entrar com Google</button>
+      <button class="btn primary" id="btn-entrar" type="button">Entrar</button>
       <div id="user-chip" class="user-chip hidden">
         <img id="user-avatar" class="user-avatar" src="" alt="" />
         <span id="user-nome" class="user-nome"></span>
@@ -244,7 +244,7 @@
           <h2>Perguntas frequentes</h2>
         </div>
         <div class="faq-list">
-          <details open><summary>Preciso criar conta?</summary><p>Sim, o acesso é feito com sua conta Google. Não é necessário criar senha — basta clicar em "Entrar com Google" e autorizar o login.</p></details>
+          <details open><summary>Preciso criar conta?</summary><p>Sim. Você pode criar uma conta com e-mail e senha em poucos segundos, ou simplesmente entrar com sua conta Google — basta clicar em "Entrar" e escolher a opção que preferir.</p></details>
           <details><summary>Como funciona o pagamento?</summary><p>O pagamento é feito via PIX, processado pelo Mercado Pago em ambiente seguro. Após a confirmação do PIX, o acesso é liberado automaticamente em segundos.</p></details>
           <details><summary>O acesso é liberado na hora?</summary><p>Sim. Assim que o pagamento PIX é aprovado, o sistema detecta automaticamente e libera seu acesso — sem necessidade de nenhuma ação manual.</p></details>
           <details><summary>Por quanto tempo tenho acesso?</summary><p>Depende do plano escolhido: 30 dias (Mensal), 90 dias (Trimestral) ou 180 dias (Semestral). O prazo começa a contar a partir do momento do pagamento.</p></details>
@@ -263,6 +263,87 @@
       <strong>PSDEV Sistemas</strong> — Simulado OAB/FGV — <a href="mailto:sistemaspsdev@gmail.com">sistemaspsdev@gmail.com</a>
     </div>
   </footer>
+
+  <!-- ── Modal de autenticação (login + cadastro) ─────────────────────────── -->
+  <div id="auth-modal" class="auth-modal hidden" role="dialog" aria-modal="true" aria-labelledby="auth-titulo-login">
+    <div class="auth-box">
+      <button class="auth-close" id="auth-close" type="button" aria-label="Fechar">&times;</button>
+
+      <!-- TELA: LOGIN -->
+      <div class="auth-tela" id="auth-tela-login">
+        <h2 class="auth-titulo" id="auth-titulo-login">Entrar</h2>
+        <div class="auth-msg hidden" id="login-msg" role="alert"></div>
+        <label class="auth-field">
+          <span>E-mail</span>
+          <input type="email" id="login-email" autocomplete="email" placeholder="Insira seu e-mail" />
+        </label>
+        <label class="auth-field">
+          <span>Senha</span>
+          <div class="auth-senha-wrap">
+            <input type="password" id="login-senha" autocomplete="current-password" placeholder="Insira sua senha" />
+            <button type="button" class="auth-olho" data-target="login-senha" aria-label="Mostrar senha">👁</button>
+          </div>
+        </label>
+        <button class="btn primary grande auth-submit" id="btn-login-email" type="button">Acessar minha conta</button>
+        <p class="auth-esqueci"><button type="button" class="auth-link" id="ir-reset">Esqueci minha senha</button></p>
+
+        <div class="auth-ou">ou</div>
+        <div class="auth-social">
+          <button type="button" class="auth-social-btn" data-google aria-label="Continuar com Google">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l6.2 5.2c-.4.4 6.6-4.8 6.6-14.6 0-1.3-.1-2.3-.4-3.4z"/></svg>
+            <span>Continuar com Google</span>
+          </button>
+        </div>
+
+        <p class="auth-rodape">Não possui conta? <button type="button" class="auth-link" id="ir-cadastro">Cadastre-se</button></p>
+      </div>
+
+      <!-- TELA: CADASTRO -->
+      <div class="auth-tela hidden" id="auth-tela-cadastro">
+        <h2 class="auth-titulo">Criar conta</h2>
+        <div class="auth-msg hidden" id="cad-msg" role="alert"></div>
+        <label class="auth-field">
+          <span>Nome</span>
+          <input type="text" id="cad-nome" autocomplete="name" placeholder="Seu nome" />
+        </label>
+        <label class="auth-field">
+          <span>E-mail</span>
+          <input type="email" id="cad-email" autocomplete="email" placeholder="Insira seu e-mail" />
+        </label>
+        <label class="auth-field">
+          <span>Senha</span>
+          <div class="auth-senha-wrap">
+            <input type="password" id="cad-senha" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" />
+            <button type="button" class="auth-olho" data-target="cad-senha" aria-label="Mostrar senha">👁</button>
+          </div>
+        </label>
+        <button class="btn primary grande auth-submit" id="btn-cadastrar" type="button">Criar conta</button>
+
+        <div class="auth-ou">ou</div>
+        <div class="auth-social">
+          <button type="button" class="auth-social-btn" data-google aria-label="Continuar com Google">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l6.2 5.2c-.4.4 6.6-4.8 6.6-14.6 0-1.3-.1-2.3-.4-3.4z"/></svg>
+            <span>Continuar com Google</span>
+          </button>
+        </div>
+
+        <p class="auth-rodape">Já tem conta? <button type="button" class="auth-link" id="ir-login">Entrar</button></p>
+      </div>
+
+      <!-- TELA: RECUPERAR SENHA -->
+      <div class="auth-tela hidden" id="auth-tela-reset">
+        <h2 class="auth-titulo">Recuperar senha</h2>
+        <p class="auth-sub">Informe seu e-mail e enviaremos um link para você criar uma nova senha.</p>
+        <div class="auth-msg hidden" id="reset-msg" role="alert"></div>
+        <label class="auth-field">
+          <span>E-mail</span>
+          <input type="email" id="reset-email" autocomplete="email" placeholder="Insira seu e-mail" />
+        </label>
+        <button class="btn primary grande auth-submit" id="btn-reset" type="button">Enviar link de recuperação</button>
+        <p class="auth-rodape"><button type="button" class="auth-link" id="voltar-login">← Voltar para o login</button></p>
+      </div>
+    </div>
+  </div>
 
   <script>
     (function () {
@@ -366,30 +447,150 @@
       // ── Atualiza header com dados do usuário logado ───────────────────────
       function mostrarChipUsuario(session) {
         const meta = session.user.user_metadata || {};
+        const nome = (meta.full_name || meta.name || '').trim();
+        const email = session.user.email || '';
         document.getElementById('btn-entrar').classList.add('hidden');
         const chip = document.getElementById('user-chip');
         chip.classList.remove('hidden');
-        document.getElementById('user-avatar').src = meta.avatar_url || '';
-        document.getElementById('user-nome').textContent =
-          (meta.full_name || meta.name || '').split(' ')[0] || session.user.email;
+        const av = document.getElementById('user-avatar');
+        av.src = meta.avatar_url || avatarIniciais(nome, email);
+        av.onerror = () => { av.onerror = null; av.src = avatarIniciais(nome, email); };
+        document.getElementById('user-nome').textContent = nome.split(' ')[0] || email;
       }
 
-      // ── Login via popup (não sai da landing) ──────────────────────────────
+      // ── Abre o modal de auth e resolve com a sessão (ou null se fechar) ────
       async function fazerLogin() {
         if (typeof _supabase === 'undefined') {
           alert('Erro: biblioteca de autenticação não carregou. Recarregue a página.');
           return null;
         }
+        return abrirAuthModal('login');
+      }
+
+      // ── Modal de autenticação (login + cadastro por e-mail/senha + Google) ─
+      let _authResolve = null;
+      const authModal = document.getElementById('auth-modal');
+
+      function abrirAuthModal(tela = 'login') {
+        trocarTelaAuth(tela);
+        authModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+          const f = document.getElementById(tela === 'login' ? 'login-email' : 'cad-nome');
+          if (f) f.focus();
+        }, 50);
+        return new Promise((resolve) => { _authResolve = resolve; });
+      }
+      function fecharAuthModal(session = null) {
+        authModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        if (_authResolve) { _authResolve(session); _authResolve = null; }
+      }
+      function trocarTelaAuth(tela) {
+        document.getElementById('auth-tela-login').classList.toggle('hidden', tela !== 'login');
+        document.getElementById('auth-tela-cadastro').classList.toggle('hidden', tela !== 'cadastro');
+        document.getElementById('auth-tela-reset').classList.toggle('hidden', tela !== 'reset');
+        ['login-msg', 'cad-msg', 'reset-msg'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.classList.add('hidden'); el.textContent = ''; }
+        });
+      }
+      function setMsgAuth(id, texto, tipo) {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = texto; el.className = 'auth-msg ' + tipo; }
+      }
+
+      document.getElementById('auth-close').addEventListener('click', () => fecharAuthModal(null));
+      authModal.addEventListener('click', (e) => { if (e.target === authModal) fecharAuthModal(null); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !authModal.classList.contains('hidden')) fecharAuthModal(null);
+      });
+      document.getElementById('ir-cadastro').addEventListener('click', () => trocarTelaAuth('cadastro'));
+      document.getElementById('ir-login').addEventListener('click', () => trocarTelaAuth('login'));
+
+      document.querySelectorAll('.auth-olho').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const input = document.getElementById(btn.dataset.target);
+          if (!input) return;
+          const ocultando = input.type === 'password';
+          input.type = ocultando ? 'text' : 'password';
+          btn.setAttribute('aria-label', ocultando ? 'Ocultar senha' : 'Mostrar senha');
+        });
+      });
+
+      async function submeterLogin() {
+        const email = document.getElementById('login-email').value.trim();
+        const senha = document.getElementById('login-senha').value;
+        if (!email || !senha) { setMsgAuth('login-msg', 'Preencha e-mail e senha.', 'erro'); return; }
+        const btn = document.getElementById('btn-login-email');
+        btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Entrando...';
+        try {
+          const session = await loginWithEmail(email, senha);
+          mostrarChipUsuario(session);
+          fecharAuthModal(session);
+        } catch (e) {
+          setMsgAuth('login-msg', traduzirErroAuth(e.message), 'erro');
+        } finally { btn.disabled = false; btn.textContent = txt; }
+      }
+
+      async function submeterCadastro() {
+        const nome  = document.getElementById('cad-nome').value.trim();
+        const email = document.getElementById('cad-email').value.trim();
+        const senha = document.getElementById('cad-senha').value;
+        if (!nome || !email || !senha) { setMsgAuth('cad-msg', 'Preencha todos os campos.', 'erro'); return; }
+        if (senha.length < 6) { setMsgAuth('cad-msg', 'A senha deve ter pelo menos 6 caracteres.', 'erro'); return; }
+        const btn = document.getElementById('btn-cadastrar');
+        btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Criando conta...';
+        try {
+          const session = await signUpWithEmail(nome, email, senha);
+          if (session) {
+            mostrarChipUsuario(session);
+            fecharAuthModal(session);
+          } else {
+            // "Confirm email" ligado no Supabase: sessão só vem após confirmar
+            setMsgAuth('cad-msg', 'Conta criada! Verifique seu e-mail para confirmar e depois faça login.', 'sucesso');
+          }
+        } catch (e) {
+          setMsgAuth('cad-msg', traduzirErroAuth(e.message), 'erro');
+        } finally { btn.disabled = false; btn.textContent = txt; }
+      }
+
+      async function googleNoModal() {
+        const alvo = document.getElementById('auth-tela-cadastro').classList.contains('hidden') ? 'login-msg' : 'cad-msg';
         try {
           const session = await loginWithGoogle();
-          if (session) mostrarChipUsuario(session);
-          return session;
+          if (session) { mostrarChipUsuario(session); fecharAuthModal(session); }
         } catch (e) {
-          alert('Erro ao iniciar login: ' + e.message);
-          console.error(e);
-          return null;
+          setMsgAuth(alvo, 'Erro ao entrar com Google: ' + e.message, 'erro');
         }
       }
+
+      document.getElementById('btn-login-email').addEventListener('click', submeterLogin);
+      document.getElementById('btn-cadastrar').addEventListener('click', submeterCadastro);
+      document.querySelectorAll('.auth-social-btn[data-google]').forEach(b => b.addEventListener('click', googleNoModal));
+      ['login-email', 'login-senha'].forEach(id =>
+        document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') submeterLogin(); }));
+      ['cad-nome', 'cad-email', 'cad-senha'].forEach(id =>
+        document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') submeterCadastro(); }));
+
+      // ── Recuperação de senha ──────────────────────────────────────────────
+      document.getElementById('ir-reset').addEventListener('click', () => trocarTelaAuth('reset'));
+      document.getElementById('voltar-login').addEventListener('click', () => trocarTelaAuth('login'));
+
+      async function submeterReset() {
+        const email = document.getElementById('reset-email').value.trim();
+        if (!email) { setMsgAuth('reset-msg', 'Informe seu e-mail.', 'erro'); return; }
+        const btn = document.getElementById('btn-reset');
+        btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Enviando...';
+        try {
+          await resetPassword(email);
+          setMsgAuth('reset-msg', '✅ E-mail enviado! Se este endereço tiver uma conta, você receberá o link em instantes. ⚠️ Importante: confira também a pasta de SPAM / lixo eletrônico — o e-mail pode cair lá.', 'sucesso');
+        } catch (e) {
+          setMsgAuth('reset-msg', traduzirErroAuth(e.message), 'erro');
+        } finally { btn.disabled = false; btn.textContent = txt; }
+      }
+      document.getElementById('btn-reset').addEventListener('click', submeterReset);
+      document.getElementById('reset-email').addEventListener('keydown', e => { if (e.key === 'Enter') submeterReset(); });
 
       // ── Botões que exigem auth ─────────────────────────────────────────────
       async function irParaSimulado() {

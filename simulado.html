@@ -8,14 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=9" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
   <link rel="manifest" href="manifest.json" />
   <!-- Oculta o body até confirmação de acesso -->
   <style>body { visibility: hidden; }</style>
   <script src="js/env.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js?v=2"></script>
-  <script src="js/auth.js?v=5"></script>
+  <script src="js/auth.js?v=8"></script>
 </head>
 <body class="simulado-page">
 
@@ -253,8 +253,9 @@
         const meta = session.user.user_metadata || {};
         const av = document.getElementById('sim-avatar');
         const nm = document.getElementById('sim-nome');
-        if (av) av.src = meta.avatar_url || '';
-        if (nm) nm.textContent = (meta.full_name || meta.name || session.user.email || '').split(' ')[0];
+        const _nome = (meta.full_name || meta.name || '').trim();
+        if (av) av.src = meta.avatar_url || avatarIniciais(_nome, session.user.email);
+        if (nm) nm.textContent = _nome.split(' ')[0] || session.user.email;
 
         // Verifica vencimento próximo e exibe banner
         try {
