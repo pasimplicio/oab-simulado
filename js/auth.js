@@ -11,18 +11,46 @@ async function getUser() {
   return session ? session.user : null;
 }
 
+// Espera a sessão hidratar do localStorage (no celular pode demorar alguns
+// instantes após abrir/voltar para a aba).
+async function getSessionResiliente(tentativas = 16, intervalo = 200) {
+  for (let i = 0; i < tentativas; i++) {
+    const { data } = await _supabase.auth.getSession();
+    if (data.session) return data.session;
+    await new Promise(r => setTimeout(r, intervalo));
+  }
+  return null;
+}
+
 // ─── Check de acesso (chama API — decisão no servidor) ───────────────────────
 async function checkAccess() {
-  const session = await getSession();
+  let session = await getSessionResiliente();
   if (!session) return { hasAccess: false, reason: 'not_logged_in' };
 
-  const res = await fetch('/api/v1/user/me', {
-    headers: { Authorization: `Bearer ${session.access_token}` },
-  });
-  if (!res.ok) return { hasAccess: false, reason: 'api_error' };
-  const { data, error } = await res.json();
-  if (error || !data) return { hasAccess: false, reason: 'api_error' };
-  return data;
+  for (let tentativa = 0; tentativa < 3; tentativa++) {
+    try {
+      const res = await fetch('/api/v1/user/me', {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      // 401 = token expirado. Comum no celular ao voltar do background, quando
+      // o auto-refresh ainda não rodou. Força o refresh e tenta de novo —
+      // NUNCA tratar isso como "sem assinatura" (mandava o assinante p/ planos).
+      if (res.status === 401) {
+        const { data } = await _supabase.auth.refreshSession();
+        if (data?.session) { session = data.session; continue; }
+        return { hasAccess: false, reason: 'not_logged_in' };
+      }
+
+      if (res.ok) {
+        const { data, error } = await res.json();
+        if (!error && data) return data;
+      }
+    } catch (_) { /* rede instável — re-tenta */ }
+    await new Promise(r => setTimeout(r, 600));
+  }
+  // Não foi possível confirmar (rede/servidor). Não é "sem acesso".
+  return { hasAccess: false, reason: 'api_error' };
 }
 
 // ─── Login / Logout ──────────────────────────────────────────────────────────

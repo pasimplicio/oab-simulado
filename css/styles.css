@@ -1011,6 +1011,10 @@ input, select, textarea { font-size: max(16px, 1em); }
 /* Reforço anti-overflow horizontal */
 html { overflow-x: hidden; }
 
+/* Anti-flash: se há sessão salva, esconde os CTAs de "experimentar" já na 1ª
+   pintura. O JS da landing os revela de volta caso o usuário fique sem acesso. */
+html.tem-sessao .js-amostra-cta { display: none !important; }
+
 /* Botões "Entrar com Google" / "Acessar" — estilo pill moderno (azul→ciano) */
 #btn-entrar,
 #btn-acessar-simulado {

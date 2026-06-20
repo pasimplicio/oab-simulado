@@ -32,7 +32,7 @@ There is no lint or test command. Sanity-check API files with `node --check api/
 
 ## Cache busting — required when editing CSS/JS
 
-Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=8`, `auth.js?v=4`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
+Static assets are referenced with `?v=N` query strings (e.g. `css/styles.css?v=8`, `js/auth.js?v=4`). When you change a shared asset, **bump the version in every HTML that loads it**, or browsers/the service worker serve stale copies. This has caused multiple "my fix isn't showing" incidents. Current versions: `styles.css?v=9`, `auth.js?v=5`, `env.js?v=2`, `supabase.js?v=2`, `app.js?v=1` (in simulado.html only).
 
 ## clean URLs (vercel.json)
 
@@ -75,7 +75,7 @@ js/admin.js        Admin panel logic (calls /api/v1/admin/*)
 Supabase OAuth (Google), **popup-based** so the user never leaves the landing:
 
 - `loginWithGoogle()` — `signInWithOAuth({ skipBrowserRedirect: true })` + `window.open()` to `/auth-callback`; resolves the session (retries `getSession()` for ~2s while it hydrates from localStorage). The landing also registers a persistent `onAuthStateChange` listener so the header updates whenever the session changes.
-- `checkAccess()` → calls `GET /api/v1/user/me` (server decides access) → returns `{ hasAccess, reason, subscription }`.
+- `checkAccess()` → calls `GET /api/v1/user/me` (server decides access) → returns `{ hasAccess, reason, subscription }`. **Mobile-robust:** waits for the session to hydrate (`getSessionResiliente`), and on a `401` (expired `access_token` — common when a phone returns from background before auto-refresh runs) it calls `refreshSession()` and retries instead of treating it as "no subscription". A transient network/API failure returns `reason: 'api_error'` (never silently sends a paying user to the plans page over an expired token).
 - `requireAccess()` — used by simulado.html; redirects to `/?login=1` (not logged in) or `/?sem-acesso=1` (no subscription).
 - `logoutUser()` — `signOut()` then redirect to `/`.
 

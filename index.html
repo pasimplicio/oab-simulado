@@ -4,16 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulado OAB/FGV - PSDEV Sistemas</title>
+  <script>
+    // Anti-flash: se já existe sessão salva, esconde os CTAs de "experimentar"
+    // antes da 1ª pintura. O JS abaixo os revela se o usuário não tiver acesso.
+    try { if (localStorage.getItem('oab_auth')) document.documentElement.classList.add('tem-sessao'); } catch (e) {}
+  </script>
   <meta name="description" content="Treine para a 1ª fase da OAB com simulados no formato FGV, banco de questões por disciplina, cronômetro e mapa de revisão." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=8" />
+  <link rel="stylesheet" href="css/styles.css?v=9" />
   <link rel="manifest" href="manifest.json" />
   <script src="js/env.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js?v=2"></script>
-  <script src="js/auth.js?v=4"></script>
+  <script src="js/auth.js?v=5"></script>
   <script src="js/pix-checkout.js"></script>
 </head>
 <body class="landing-page">
@@ -239,7 +244,14 @@
             headers: { Authorization: `Bearer ${session.access_token}` }
           }).then(r => r.json());
           if (res?.data) mostrarStatusAssinatura(res.data);
-        } catch (_) {}
+          else revelarAmostraCtas();
+        } catch (_) { revelarAmostraCtas(); }
+      }
+
+      // Revela os CTAs de "experimentar" (desfaz o esconde otimista anti-flash)
+      function revelarAmostraCtas() {
+        document.documentElement.classList.remove('tem-sessao');
+        document.querySelectorAll('.js-amostra-cta').forEach(el => { el.style.display = ''; });
       }
 
       // ── Detecta sessão Supabase e atualiza header ──────────────────────────
@@ -248,6 +260,8 @@
         if (session) {
           mostrarChipUsuario(session);
           carregarAssinatura(session);
+        } else {
+          revelarAmostraCtas();
         }
 
         // Atualiza a UI sempre que o estado de auth mudar (ex.: ao concluir o popup de login)
@@ -274,7 +288,7 @@
       // ── Exibe status da assinatura no chip do header ─────────────────────────
       function mostrarStatusAssinatura(dados) {
         const sub = dados.subscription;
-        if (!sub || (!dados.hasAccess && !sub.acesso_manual)) return;
+        if (!sub || (!dados.hasAccess && !sub.acesso_manual)) { revelarAmostraCtas(); return; }
 
         // Já tem acesso ativo — esconde os CTAs de "Experimentar grátis"
         document.querySelectorAll('.js-amostra-cta').forEach(el => { el.style.display = 'none'; });
